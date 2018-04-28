@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Connexion</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <a href="Proactif.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
+        <input type='button' name='button1' value='S inscrire' onclick="self.location.href='FenetreInscription.html'">
+        <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
+        <hr/>
+        <br>
+        <form action="">
+            <fieldset>
+                <legend>Veuillez sélectionner votre Mode de connexion:</legend>
+                <input type="radio" name="usertype" value="client" checked> Utilisateur<br>
+                <input type="radio" name="usertype" value="employee" checked> Employe<br>
+            </fieldset><br><br>
+            Mail: <input type="text" name="mail"><br><br>
+            Mot de passe: <input type="password" name="password"><br><br>
+            <input type="submit" value="Valider">
+        </form>
+    </body>
+</html>
