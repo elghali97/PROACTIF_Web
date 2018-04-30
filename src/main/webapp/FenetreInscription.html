@@ -9,6 +9,7 @@ and open the template in the editor.
         <title>Page Inscription</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
         <a href="Proactif.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
@@ -16,33 +17,33 @@ and open the template in the editor.
         <input type='button' name='button2' value='Se connecter' onclick="self.location.href='FenetreConnexion.html'">
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
-        <form action="FenetreConfirmation.html">
+        <!--<form action="FenetreConfirmation.html">-->
             <fieldset>
                 <p>Veuillez remplir le formulaire ci-dessous: </p>
                 Civilité :
                 <input type="radio" name="gender" value="man" checked> Monsieur
                 <input type="radio" name="gender" value="woman" checked> Madame<br><br>
-                Nom: <input type="text" name="name" required="required"><br><br>
-                Prenom: <input type="text" name="surname" required="required"><br><br>
-                Date de naissance: <input type="text" name="borndate" placeholder="JJ/MM/AAAA" required="required"><br><br>
+                Nom: <input type="text" id="name" name="name" required="required"><br><br>
+                Prenom: <input type="text" id="surname" name="surname" required="required"><br><br>
+                Date de naissance: <input type="text" id="borndate" name="borndate" placeholder="JJ/MM/AAAA" required="required"><br><br>
                 <b><u>Adresse Postale:</u></b><br><br>
-                Code Postal: <input type="text" name="postcode" required="required">
-                Ville: <input type="text" name="city" required="required"><br><br>
-                Rue: <input type="text" name="street" required="required"><br><br>
+                Code Postal: <input type="text" id="postcode" name="postcode" required="required">
+                Ville: <input type="text" id="city" name="city" required="required"><br><br>
+                Rue: <input type="text" id="street" name="street" required="required"><br><br>
                 <b><u>Contact: </u></b><br><br>
-                Tel: <input type="text" name="telephone" required="required"><br><br>
-                Mail: <input type="text" name="mail" required="required" id="email"><br><br>
-                Confirmez Mail: <input type="text" name="conf-mail" required="required" id="conf-email" onblur="confirmEmail()"><br><br>
-                Mot de passe: <input type="password" name="password" required="required" id="password"><br><br>
+                Tel: <input type="text" id="telephone" name="telephone" required="required"><br><br>
+                Mail: <input type="text" id="mail" name="mail" required="required"><br><br>
+                Confirmez Mail: <input type="text" id="conf-mail" name="conf-mail" required="required" onblur="confirmEmail()"><br><br>
+                Mot de passe: <input type="password" id="password" name="password" required="required"><br><br>
                 Confirmez Mot de Passe: <input type="password" name="conf-password" required="required" id="conf-password"><br><br>
-                <input type="submit" value="Confirmer">
+                <button id="boutonConfirmer">Confirmer</button><br/>
             </fieldset>
-        </form>
+        <!--</form>-->
         
         <script>
             function confirmEmail() {
-                var email = document.getElementById("email").value;
-                var confemail = document.getElementById("conf-email").value;
+                var email = document.getElementById("mail").value;
+                var confemail = document.getElementById("conf-mail").value;
                 if(email != confemail) {
                     alert('Email Not Matching!');
                 }
@@ -55,6 +56,58 @@ and open the template in the editor.
                     alert('Password Not Matching!');
                 }
             }
+            
+            function inscription() {
+                var civilite= $("input[name='gender']:checked").val();
+                var name = $('#name').val();
+                var surname = $('#surname').val();
+                var borndate = $('#borndate').val();
+                var postcode = $('#postcode').val();
+                var city = $('#city').val();
+                var street = $('#street').val();
+                var telephone = $('#telephone').val();
+                var mail = $('#mail').val();
+                var password = $('#password').val();
+                
+               $.ajax({
+                        url: './ActionServlet',
+                        method: 'POST',
+                        data: {
+                            action: 'inscription',
+                            civilite: civilite,
+                            name: name,
+                            surname: surname,
+                            borndate: borndate,
+                            postcode: postcode,
+                            city: city,
+                            street: street,
+                            telephone: telephone,
+                            mail: mail,
+                            password: password
+                        },
+                        dataType: 'json'
+                    }).done(function (data) {
+                        // si connexion ok, aller sur la page suivante :
+                        var confInscription = data.Inscription;
+                        if (confInscription) {
+                            window.location = "FenetreConfirmation.html";
+                        } else {
+                            alert('Echec de l\'inscription');
+                            // si connexion pas ok afficher un texte dans la div message :
+                        }
+                    });
+                    
+            }
+            
+            $(document).ready(function () {
+                // ajout d'un "handler" sur le clic du bouton de connexion
+                $('#boutonConfirmer').on('click', function () {
+                    // affichage pour debugage dans la console javascript du navigateur
+                    console.log('Click sur le bouton "S\'inscrire"');
+                    // appel de la fonction connexion
+                    inscription();
+                });
+            });
         </script>
         
     </body>

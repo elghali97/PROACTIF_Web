@@ -2,10 +2,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import fr.insalyon.dasi.proactif.DAO.JpaUtil;
+import fr.insalyon.dasi.proactif.metier.OM.Client;
 import fr.insalyon.dasi.proactif.metier.OM.Personne;
 import fr.insalyon.dasi.proactif.metier.Service.ServiceMetier;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -29,7 +35,7 @@ public class ActionServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, ParseException {
         response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
             //Service s= new Service();
@@ -43,6 +49,22 @@ public class ActionServlet extends HttpServlet {
                 }else{
                     printDetailConnection(out,"OK");
                 }
+            }else if ("inscription".equals(todo)){
+                String civilite = request.getParameter("civilite");
+                String name = request.getParameter("name");
+                String surname = request.getParameter("surname");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String d = request.getParameter("borndate");
+                Date borndate = sdf.parse(d);
+                String postcode = request.getParameter("postcode");
+                String city = request.getParameter("city");
+                String street = request.getParameter("street");
+                String telephone = request.getParameter("telephone");
+                String mail = request.getParameter("mail");
+                String password = request.getParameter("password");
+                Client p = new Client (civilite, name, surname, borndate, postcode, city, street, telephone, mail, password);
+                boolean result = ServiceMetier.creerPersonne(p);
+                printDetailInscription(out, result);
             }
 //            if (q==null){
 //                List<Service.Personne> personnes = s.consulterListePersonnes();
@@ -60,6 +82,13 @@ public class ActionServlet extends HttpServlet {
 //            }
             out.close();
         }
+    }
+    
+    protected void printDetailInscription(PrintWriter out, boolean result){
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        JsonObject container = new JsonObject();
+        container.addProperty("Inscription",result);
+        out.println(gson.toJson(container));
     }
     
 //    protected void printListPersonne(PrintWriter out, List<Service.Personne> personnes){
@@ -126,7 +155,11 @@ public class ActionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ParseException ex) {
+            Logger.getLogger(ActionServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -140,7 +173,11 @@ public class ActionServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ParseException ex) {
+            Logger.getLogger(ActionServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
