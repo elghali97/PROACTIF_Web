@@ -17,7 +17,6 @@ and open the template in the editor.
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
         <br>
-        <form>
             <fieldset>
                 <legend>Veuillez sélectionner votre Mode de connexion:</legend>
                 <input type="radio" name="usertype" value="utilisateur" checked> Utilisateur<br>
@@ -26,7 +25,6 @@ and open the template in the editor.
             Mail: <input type="text" id="champ-login" name="mail" placeholder="Votre Identifiant" required="required"><br><br>
             Mot de passe: <input type="password" id="champ-password" name="password" required><br><br>
             <button id="bouton-connexion">Valider</button><br><br>
-        </form>
         <div id="message"></div>
         
         <script>
@@ -49,12 +47,15 @@ and open the template in the editor.
                             password: champPassword
                         },
                         dataType: 'json'
-                    }).done(function (data) {
-                        // ici votre code...
-                        // si connexion ok, aller sur la page suivante :
-                        window.location = "index.html";
+                    }).done(function (data) {;
+                        var connection=data.Authentification;
+                        if(connection=="OK"){
+                            // si connexion ok, aller sur la page suivante :
+                            window.location = "index.html";
+                        }else{
                         // si connexion pas ok afficher un texte dans la div message :
-                        $('#message').html('Echec de la connexion');
+                            alert('Echec de la connexion');
+                        }
                     });
                 }
             }
