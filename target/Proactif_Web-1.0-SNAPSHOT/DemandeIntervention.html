@@ -9,6 +9,7 @@ and open the template in the editor.
         <title>Demande d'intervention</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
         <a href="ClientConnecte.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
@@ -18,11 +19,64 @@ and open the template in the editor.
         
         <br/>
         Type : 
-        <input list="liste" name="text1" type="text" id="text1" placeholder="Type d'intervention" />
-        <br/>
-        <br/>
+        <select name="liste" id="liste" size="1">
+            <option value="value1">Incident</option>
+            <option value="value2">Livraison</option>
+            <option value="value3">Animal</option>
+        </select><br/><br/>
+        <p></p>
         Description : 
-        <input list="liste" name="text2" type="text" id="text2" placeholder="Ajouter une description" />
+        <input type="text" name="text2" id="description" placeholder="Ajouter une description" /><br/><br/>
         <input type='button' name='button2' value='Valider' onclick="window.location.href='ClientConnecte.html'"> 
+        
+        <script>
+            function afficherLivraison() {
+                console.log("function livraison");
+                $('p').append(' Entreprise : <input type="text" name="text2" type="text" id="entreprise" placeholder="Préciser une entreprise" /><br/><br/> ');
+            }
+            
+            function effacerEntreprise() {
+                console.log("function livraison");
+                $('p').empty();
+            }
+            
+            $('#liste').on('change', function() {
+                // ajout d'un "handler" sur le clic du bouton de connexion
+                var e = document.getElementById("liste");
+                var strType = e.options[e.selectedIndex].value;
+                if(strType=="value2"){
+                    afficherLivraison();
+                } else {
+                    effacerEntreprise();
+                }
+                
+            });
+    
+            function creerIntervention() {
+                var type = $('#type').val();
+                var description = $('#description').val();
+                
+                 $.ajax({
+                        url: './ActionServlet',
+                        method: 'POST',
+                        data: {
+                            action: 'intervention',
+                            type: type,
+                            descrpition: description
+                        },
+                        dataType: 'json'
+                    }).done(function (data) {
+                        // si connexion ok, aller sur la page suivante :
+                       // var confInscription = data.Inscription;
+                       // if (confInscription) {
+                       //     window.location = "FenetreConfirmation.html";
+                       // } else {
+                      //     alert('Echec de l\'inscription');
+                            // si connexion pas ok afficher un texte dans la div message :
+                       // }
+                    });
+            }
+        </script>
     </body>
+    
 </html>

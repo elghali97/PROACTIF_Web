@@ -3,6 +3,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import fr.insalyon.dasi.proactif.DAO.JpaUtil;
 import fr.insalyon.dasi.proactif.metier.OM.Client;
+import fr.insalyon.dasi.proactif.metier.OM.Incident;
+import fr.insalyon.dasi.proactif.metier.OM.Livraison;
 import fr.insalyon.dasi.proactif.metier.OM.Personne;
 import fr.insalyon.dasi.proactif.metier.Service.ServiceMetier;
 import java.io.IOException;
@@ -65,6 +67,17 @@ public class ActionServlet extends HttpServlet {
                 Client p = new Client (civilite, name, surname, borndate, postcode, city, street, telephone, mail, password);
                 boolean result = ServiceMetier.creerPersonne(p);
                 printDetailInscription(out, result);
+                
+            } else if ("intervention".equals(todo)) {
+                String type = request.getParameter("type");
+                String description = request.getParameter("description");
+                
+               // if (type.equals("Incident")) {
+                //    Incident i = new Incident (description, date, client);
+               // } else if (type.equals("Livraison")) {
+                 //   Livraison i = new Livraison ();
+                //}
+                //boolean conf = ServiceMetier.creerIntervention(i);
             }
 //            if (q==null){
 //                List<Service.Personne> personnes = s.consulterListePersonnes();
