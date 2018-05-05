@@ -49,11 +49,10 @@ public class ActionServlet extends HttpServlet {
                     String usertype=request.getParameter("usertype");
                     System.out.println("usertype: "+usertype);
                     Personne p=ServiceMetier.chercherPersonneMailEtMdp(login,password);
-                    boolean aut=authentify(p,usertype);
-                    if((p!=null) && (aut)){
-                        printDetailConnection(out,"KO");
+                    if((p!=null) && authentify(p,usertype)){
+                        printDetailConnection(out,"OK");
                     }else{
-                        printDetailConnection(out, "OK");
+                        printDetailConnection(out, "KO");
                     }    
                     break;
                 }

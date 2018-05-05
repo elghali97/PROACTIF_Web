@@ -8,25 +8,40 @@ and open the template in the editor.
     <head>
         <title>Connexion</title>
         <meta charset="UTF-8">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
         <a href="Proactif.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
         <input type='button' name='button1' value='S inscrire' onclick="self.location.href='FenetreInscription.html'">
         <input type='button' name='button2' value='Se connecter' onclick="self.location.href='FenetreConnexion.html'">
+        <input type='button' name='button3' value='Remplir Client' onclick=rempliAutoClient()>
+        <input type='button' name='button3' value='Remplir Employe' onclick=rempliAutoEmploye()>
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
         <br>
         <fieldset>
             <legend>Veuillez sélectionner votre Mode de connexion:</legend>
-            <input type="radio" name="usertype" value="utilisateur" checked> Utilisateur<br>
-            <input type="radio" name="usertype" value="employe" checked> Employe<br>
+            <input type="radio" name="usertype" id="user" value="utilisateur" checked> Utilisateur<br>
+            <input type="radio" name="usertype" id="employee" value="employe" checked> Employe<br>
         </fieldset><br><br>
-        Mail: <input type="text" id="champ-login" name="mail" placeholder="Votre Identifiant" required="required"><br><br>
+        Mail: <input type="email" id="champ-login" name="mail" placeholder="Votre Identifiant" required="required"><br><br>
         Mot de passe: <input type="password" id="champ-password" name="password" required><br><br>
         <button id="bouton-connexion">Valider</button><br><br>
         <div id="message"></div>
         
         <script>
+            
+            function rempliAutoClient(){
+                document.getElementById("user").checked = true;
+                document.getElementById("champ-login").value="el.ben@gmail.com";
+                document.getElementById("champ-password").value="bench";
+            }
+            
+            function rempliAutoEmploye(){
+                document.getElementById("employee").checked = true;
+                document.getElementById("champ-login").value="cgangalic@gmail.com";
+                document.getElementById("champ-password").value="12ga34ca";
+            }
             
             function connexion() {
                 var champLogin = $('#champ-login').val();

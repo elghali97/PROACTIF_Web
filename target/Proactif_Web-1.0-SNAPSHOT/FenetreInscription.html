@@ -15,24 +15,25 @@ and open the template in the editor.
         <a href="Proactif.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
         <input type='button' name='button1' value='S inscrire' onclick="self.location.href='FenetreInscription.html'">
         <input type='button' name='button2' value='Se connecter' onclick="self.location.href='FenetreConnexion.html'">
+        <input type='button' name='button3' value='Remplir automatiquement' onclick=rempliAuto()>
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
             <fieldset>
                 <p>Veuillez remplir le formulaire ci-dessous: </p>
                 Civilité :
-                <input type="radio" name="gender" value="man" checked> Monsieur
-                <input type="radio" name="gender" value="woman" checked> Madame<br><br>
+                <input type="radio" name="gender" id="man" value="man" checked> Monsieur
+                <input type="radio" name="gender" id="woman" value="woman" checked> Madame<br><br>
                 Nom: <input type="text" id="name" name="name" required="required"><br><br>
                 Prenom: <input type="text" id="surname" name="surname" required="required"><br><br>
-                Date de naissance: <input type="text" id="borndate" name="borndate" placeholder="JJ/MM/AAAA" required="required"><br><br>
+                Date de naissance: <input type="date" id="borndate" name="borndate" required="required"><br><br>
                 <b><u>Adresse Postale:</u></b><br><br>
                 Code Postal: <input type="text" id="postcode" name="postcode" required="required">
                 Ville: <input type="text" id="city" name="city" required="required"><br><br>
                 Rue: <input type="text" id="street" name="street" required="required"><br><br>
                 <b><u>Contact: </u></b><br><br>
-                Tel: <input type="text" id="telephone" name="telephone" required="required"><br><br>
-                Mail: <input type="text" id="mail" name="mail" required="required"><br><br>
-                Confirmez Mail: <input type="text" id="conf-mail" name="conf-mail" required="required" onblur="confirmEmail()"><br><br>
+                Tel: <input type="tel" id="telephone" name="telephone" required="required"><br><br>
+                Mail: <input type="email" id="mail" name="mail" required="required"><br><br>
+                Confirmez Mail: <input type="email" id="conf-mail" name="conf-mail" required="required" onblur="confirmEmail()"><br><br>
                 Mot de passe: <input type="password" id="password" name="password" required="required"><br><br>
                 Confirmez Mot de Passe: <input type="password" name="conf-password" required="required" id="conf-password"><br><br>
                 <button id="boutonConfirmer">Confirmer</button><br/>
@@ -53,6 +54,21 @@ and open the template in the editor.
                 if(password != confpass) {
                     alert('Password Not Matching!');
                 }
+            }
+            
+            function rempliAuto(){
+                document.getElementById("man").checked = true;
+                document.getElementById("name").value="Benchekroun";
+                document.getElementById("surname").value="El Ghali";
+                document.getElementById("borndate").value="1997-01-20";
+                document.getElementById("postcode").value="69100";
+                document.getElementById("city").value="Villeurbanne";
+                document.getElementById("street").value="20 avenue Albert Einstein";
+                document.getElementById("telephone").value="0698252795";
+                document.getElementById("mail").value="el.ben@gmail.com";
+                document.getElementById("conf-mail").value="el.ben@gmail.com";
+                document.getElementById("password").value="bench";
+                document.getElementById("conf-password").value="bench";
             }
             
             function inscription() {
