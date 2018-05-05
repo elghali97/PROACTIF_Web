@@ -3,10 +3,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import fr.insalyon.dasi.proactif.DAO.JpaUtil;
 import fr.insalyon.dasi.proactif.metier.OM.Client;
-import fr.insalyon.dasi.proactif.metier.OM.Incident;
-import fr.insalyon.dasi.proactif.metier.OM.Livraison;
+import fr.insalyon.dasi.proactif.metier.OM.Employe;
 import fr.insalyon.dasi.proactif.metier.OM.Personne;
 import fr.insalyon.dasi.proactif.metier.Service.ServiceMetier;
+import fr.insalyon.dasi.proactif.metier.Service.ServiceUtile;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
@@ -42,42 +42,51 @@ public class ActionServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             //Service s= new Service();
             String todo =request.getParameter("action");
-            if ("connecter".equals(todo)){
-                String login= request.getParameter("login");
-                String password= request.getParameter("password");
-                Personne p=ServiceMetier.chercherPersonneMailEtMdp(login,password);
-                if(p==null){
-                    printDetailConnection(out,"KO");
-                }else{
-                    printDetailConnection(out,"OK");
+            switch (todo) {
+                case "connecter":{
+                    String login= request.getParameter("login");
+                    String password= request.getParameter("password");
+                    String usertype=request.getParameter("usertype");
+                    System.out.println("usertype: "+usertype);
+                    Personne p=ServiceMetier.chercherPersonneMailEtMdp(login,password);
+                    boolean aut=authentify(p,usertype);
+                    if((p!=null) && (aut)){
+                        printDetailConnection(out,"KO");
+                    }else{
+                        printDetailConnection(out, "OK");
+                    }    
+                    break;
                 }
-            }else if ("inscription".equals(todo)){
-                String civilite = request.getParameter("civilite");
-                String name = request.getParameter("name");
-                String surname = request.getParameter("surname");
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String d = request.getParameter("borndate");
-                Date borndate = sdf.parse(d);
-                String postcode = request.getParameter("postcode");
-                String city = request.getParameter("city");
-                String street = request.getParameter("street");
-                String telephone = request.getParameter("telephone");
-                String mail = request.getParameter("mail");
-                String password = request.getParameter("password");
-                Client p = new Client (civilite, name, surname, borndate, postcode, city, street, telephone, mail, password);
-                boolean result = ServiceMetier.creerPersonne(p);
-                printDetailInscription(out, result);
-                
-            } else if ("intervention".equals(todo)) {
-                String type = request.getParameter("type");
-                String description = request.getParameter("description");
-                
-               // if (type.equals("Incident")) {
-                //    Incident i = new Incident (description, date, client);
-               // } else if (type.equals("Livraison")) {
-                 //   Livraison i = new Livraison ();
-                //}
-                //boolean conf = ServiceMetier.creerIntervention(i);
+                case "inscription":{
+                    String civilite = request.getParameter("civilite");
+                    String name = request.getParameter("name");
+                    String surname = request.getParameter("surname");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    String d = request.getParameter("borndate");
+                    Date borndate = sdf.parse(d);
+                    String postcode = request.getParameter("postcode");
+                    String city = request.getParameter("city");
+                    String street = request.getParameter("street");
+                    String telephone = request.getParameter("telephone");
+                    String mail = request.getParameter("mail");
+                    String password = request.getParameter("password");
+                    Client p = new Client (civilite, name, surname, borndate, postcode, city, street, telephone, mail, password);
+                    boolean result = ServiceMetier.creerPersonne(p);
+                    printDetailInscription(out, result);
+                    break;
+                }
+                case "intervention":{
+                    String type = request.getParameter("type");
+                    String description = request.getParameter("description");
+                    
+                    // if (type.equals("Incident")) {
+                    //    Incident i = new Incident (description, date, client);
+                    // } else if (type.equals("Livraison")) {
+                    //   Livraison i = new Livraison ();
+                    //}
+                    //boolean conf = ServiceMetier.creerIntervention(i);
+                    break;
+                }
             }
 //            if (q==null){
 //                List<Service.Personne> personnes = s.consulterListePersonnes();
@@ -142,6 +151,19 @@ public class ActionServlet extends HttpServlet {
         JsonObject container = new JsonObject();
         container.add("personne",jsonPersonne);
         out.println(gson.toJson(container)); 
+    }
+    
+    protected boolean authentify(Personne p, String usertype){        
+        boolean authentification;
+        if(usertype.equals("employe")){
+            Employe e= ServiceUtile.chercherEmployeId(p.getId());
+            authentification= (p.getNom().equals(e.getNom()))&&(p.getPrenom().equals(e.getPrenom()))&&(p.getDateNaiss()==e.getDateNaiss());
+            return authentification;
+        }else{
+            Client c= ServiceUtile.chercherClientId(p.getId());
+            authentification= (p.getNom().equals(c.getNom()))&&(p.getPrenom().equals(c.getPrenom()))&&(p.getDateNaiss()==c.getDateNaiss());
+            return authentification;
+        }
     }
 
     @Override

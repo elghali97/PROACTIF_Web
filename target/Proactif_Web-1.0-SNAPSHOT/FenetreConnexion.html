@@ -8,7 +8,6 @@ and open the template in the editor.
     <head>
         <title>Connexion</title>
         <meta charset="UTF-8">
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
         <a href="Proactif.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
@@ -17,14 +16,14 @@ and open the template in the editor.
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
         <br>
-            <fieldset>
-                <legend>Veuillez sélectionner votre Mode de connexion:</legend>
-                <input type="radio" name="usertype" value="utilisateur" checked> Utilisateur<br>
-                <input type="radio" name="usertype" value="employe" checked> Employe<br>
-            </fieldset><br><br>
-            Mail: <input type="text" id="champ-login" name="mail" placeholder="Votre Identifiant" required="required"><br><br>
-            Mot de passe: <input type="password" id="champ-password" name="password" required><br><br>
-            <button id="bouton-connexion">Valider</button><br><br>
+        <fieldset>
+            <legend>Veuillez sélectionner votre Mode de connexion:</legend>
+            <input type="radio" name="usertype" value="utilisateur" checked> Utilisateur<br>
+            <input type="radio" name="usertype" value="employe" checked> Employe<br>
+        </fieldset><br><br>
+        Mail: <input type="text" id="champ-login" name="mail" placeholder="Votre Identifiant" required="required"><br><br>
+        Mot de passe: <input type="password" id="champ-password" name="password" required><br><br>
+        <button id="bouton-connexion">Valider</button><br><br>
         <div id="message"></div>
         
         <script>
@@ -43,6 +42,7 @@ and open the template in the editor.
                         method: 'POST',
                         data: {
                             action: 'connecter',
+                            usertype: champUserType,
                             login: champLogin,
                             password: champPassword
                         },
