@@ -30,13 +30,19 @@ and open the template in the editor.
         <input type='button' name='button2' value='Valider' onclick="window.location.href='ClientConnecte.html'"> 
         
         <script>
-            function afficherLivraison() {
-                console.log("function livraison");
-                $('p').append(' Entreprise : <input type="text" name="text2" type="text" id="entreprise" placeholder="Préciser une entreprise" /><br/><br/> ');
+            function afficherObjetLivraison() {
+                $('p').append(' Objet à livrer : <input type="text" name="text3" id="objet" placeholder="Préciser l\'objet à livrer" /><br/><br/> ');
             }
             
-            function effacerEntreprise() {
-                console.log("function livraison");
+            function afficherLivraison() {
+                $('p').append(' Entreprise : <input type="text" name="text3" id="entreprise" placeholder="Préciser une entreprise" /><br/><br/> ');
+            }
+            
+            function afficherAnimal() {
+                $('p').append(' Animal : <input type="text" name="text4" id="animal" placeholder="Préciser l\'animal" /><br/><br/> ');
+            }
+            
+            function effacer() {
                 $('p').empty();
             }
             
@@ -45,15 +51,26 @@ and open the template in the editor.
                 var e = document.getElementById("liste");
                 var strType = e.options[e.selectedIndex].value;
                 if(strType=="value2"){
+                    afficherObjetLivraison();
                     afficherLivraison();
-                } else {
-                    effacerEntreprise();
-                }
+                    effacer();
+                } else if (strType=="value3") {
+                    afficherAnimal();
+                    effacer();
+                    effacer();
+                } else if (strType=="value1") {
+                    effacer();
+                    effacer();
+                    effacer(); // Fonctionnement à vérifier
+                } 
                 
             });
     
             function creerIntervention() {
-                var type = $('#type').val();
+                var type = $('#liste').val();
+                var objet = $('#objet').val();
+                var entreprise = $('#entreprise').val();
+                var animal = $('#animal').val();
                 var description = $('#description').val();
                 
                  $.ajax({
@@ -61,19 +78,23 @@ and open the template in the editor.
                         method: 'POST',
                         data: {
                             action: 'intervention',
+                            //je dois également envoyer id du client
+                            //id: id,
                             type: type,
-                            descrpition: description
+                            objet: objet,
+                            entreprise: entreprise,
+                            animal: animal,
+                            description: description
                         },
                         dataType: 'json'
                     }).done(function (data) {
-                        // si connexion ok, aller sur la page suivante :
-                       // var confInscription = data.Inscription;
-                       // if (confInscription) {
-                       //     window.location = "FenetreConfirmation.html";
-                       // } else {
-                      //     alert('Echec de l\'inscription');
-                            // si connexion pas ok afficher un texte dans la div message :
-                       // }
+                        var confIntervention = data.Intervention;
+                        if (confIntervention) {
+                            alert('Demande d\'intervention envoyée');
+                            window.location = "ClientConnecte.html";
+                        } else {
+                            alert('Echec de l\'envoie de demande d\'intervention, veuillez réessayer plus tard');
+                        }
                     });
             }
         </script>

@@ -3,9 +3,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.insalyon.dasi.proactif.DAO.JpaUtil;
+import fr.insalyon.dasi.proactif.metier.OM.Animal;
 import fr.insalyon.dasi.proactif.metier.OM.Client;
 import fr.insalyon.dasi.proactif.metier.OM.Employe;
+import fr.insalyon.dasi.proactif.metier.OM.Incident;
 import fr.insalyon.dasi.proactif.metier.OM.Intervention;
+import fr.insalyon.dasi.proactif.metier.OM.Livraison;
 import fr.insalyon.dasi.proactif.metier.OM.Personne;
 import fr.insalyon.dasi.proactif.metier.Service.ServiceMetier;
 import fr.insalyon.dasi.proactif.metier.Service.ServiceUtile;
@@ -60,6 +63,7 @@ public class ActionServlet extends HttpServlet {
             
             switch (todo) {
                 case "connecter":{
+                    
                     String login= request.getParameter("login");
                     String password= request.getParameter("password");
                     String usertype=request.getParameter("usertype");
@@ -71,8 +75,10 @@ public class ActionServlet extends HttpServlet {
                         printDetailConnection(out, "KO",0);
                     }    
                     break;
+                    
                 }
                 case "inscription":{
+                    
                     String civilite = request.getParameter("civilite");
                     String name = request.getParameter("name");
                     String surname = request.getParameter("surname");
@@ -91,18 +97,39 @@ public class ActionServlet extends HttpServlet {
                     break;
                 }
                 case "intervention":{
-                    String type = request.getParameter("type");
-                    String description = request.getParameter("description");
                     
+                    String type = request.getParameter("type");
+                    String objet = request.getParameter("objet");
+                    String entreprise = request.getParameter("entreprise");
+                    String animal = request.getParameter("animal");
+                    String description = request.getParameter("description");
+                    String idClient = request.getParameter("idClient");
+                    int id = Integer.parseInt(idClient);
+                    Client client = ServiceUtile.chercherClientId(id);
+                    //!!!!!!! Définir date du jour
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    Date currentDate = new Date();
+                    Intervention i;
+                    if (type.equals("Livraison")) {
+                        i = new Livraison (objet, entreprise, description, currentDate, client);
+                    } else if (type.equals("Animal")) {
+                        i = new Animal (animal, description, currentDate, client);
+                    } else {
+                        i = new Incident (description, currentDate, client);
+                    }
+                    boolean conf = ServiceMetier.creerIntervention(i);
+                    printDetailIntervention(out, conf);
+                    break;
                     // if (type.equals("Incident")) {
                     //    Incident i = new Incident (description, date, client);
                     // } else if (type.equals("Livraison")) {
                     //   Livraison i = new Livraison ();
                     //}
                     //boolean conf = ServiceMetier.creerIntervention(i);
-                    break;
+                    
                 }
                 case "consulterInterventionEnCours":{
+                    
                     String idEmploye=request.getParameter("IdEmploye");
                     System.out.println("idEmploye : "+idEmploye);
                     int id=Integer.parseInt(idEmploye);
@@ -114,8 +141,9 @@ public class ActionServlet extends HttpServlet {
                         printInterventionActive(out,null);
                     }
                     break;
+                    
                 }
-            }
+                
 //            if (q==null){
 //                List<Service.Personne> personnes = s.consulterListePersonnes();
 //                printListPersonne(out,personnes);
@@ -130,6 +158,7 @@ public class ActionServlet extends HttpServlet {
 //                    printDetailPersonne(out,p);
 //                }
 //            }
+            }
             out.close();
         }
     }
@@ -138,6 +167,13 @@ public class ActionServlet extends HttpServlet {
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         JsonObject container = new JsonObject();
         container.addProperty("Inscription",result);
+        out.println(gson.toJson(container));
+    }
+    
+    protected void printDetailIntervention(PrintWriter out, boolean conf) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonObject container = new JsonObject();
+        container.addProperty("Intervention", conf);
         out.println(gson.toJson(container));
     }
     
