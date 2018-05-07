@@ -2,8 +2,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import fr.insalyon.dasi.proactif.DAO.JpaUtil;
+import fr.insalyon.dasi.proactif.metier.OM.Animal;
 import fr.insalyon.dasi.proactif.metier.OM.Client;
 import fr.insalyon.dasi.proactif.metier.OM.Employe;
+import fr.insalyon.dasi.proactif.metier.OM.Incident;
+import fr.insalyon.dasi.proactif.metier.OM.Intervention;
+import fr.insalyon.dasi.proactif.metier.OM.Livraison;
 import fr.insalyon.dasi.proactif.metier.OM.Personne;
 import fr.insalyon.dasi.proactif.metier.Service.ServiceMetier;
 import fr.insalyon.dasi.proactif.metier.Service.ServiceUtile;
@@ -19,6 +23,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import static org.joda.time.format.ISODateTimeFormat.date;
 
 
 /**
@@ -76,17 +81,28 @@ public class ActionServlet extends HttpServlet {
                 }
                 case "intervention":{
                     String type = request.getParameter("type");
+                    String objet = request.getParameter("objet");
+                    String entreprise = request.getParameter("entreprise");
+                    String animal = request.getParameter("animal");
                     String description = request.getParameter("description");
                     
-                    // if (type.equals("Incident")) {
-                    //    Incident i = new Incident (description, date, client);
-                    // } else if (type.equals("Livraison")) {
-                    //   Livraison i = new Livraison ();
-                    //}
-                    //boolean conf = ServiceMetier.creerIntervention(i);
-                    break;
+                    String idClient = request.getParameter("idClient");
+                    int id = Integer.parseInt(idClient);
+                    Client client = ServiceUtile.chercherClientId(id);
+                    //!!!!!!! Définir date du jour
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    Date currentDate = new Date();
+                    Intervention i;
+                    if (type.equals("Livraison")) {
+                        i = new Livraison (objet, entreprise, description, currentDate, client);
+                    } else if (type.equals("Animal")) {
+                        i = new Animal (animal, description, currentDate, client);
+                    } else {
+                        i = new Incident (description, currentDate, client);
+                    }
+                    boolean conf = ServiceMetier.creerIntervention(i);
+                    printDetailIntervention(out, conf);
                 }
-            }
 //            if (q==null){
 //                List<Service.Personne> personnes = s.consulterListePersonnes();
 //                printListPersonne(out,personnes);
@@ -101,6 +117,7 @@ public class ActionServlet extends HttpServlet {
 //                    printDetailPersonne(out,p);
 //                }
 //            }
+            }
             out.close();
         }
     }
@@ -109,6 +126,13 @@ public class ActionServlet extends HttpServlet {
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         JsonObject container = new JsonObject();
         container.addProperty("Inscription",result);
+        out.println(gson.toJson(container));
+    }
+    
+    protected void printDetailIntervention(PrintWriter out, boolean conf) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonObject container = new JsonObject();
+        container.addProperty("Intervention", conf);
         out.println(gson.toJson(container));
     }
     
