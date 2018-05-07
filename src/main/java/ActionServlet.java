@@ -1,9 +1,11 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.insalyon.dasi.proactif.DAO.JpaUtil;
 import fr.insalyon.dasi.proactif.metier.OM.Client;
 import fr.insalyon.dasi.proactif.metier.OM.Employe;
+import fr.insalyon.dasi.proactif.metier.OM.Intervention;
 import fr.insalyon.dasi.proactif.metier.OM.Personne;
 import fr.insalyon.dasi.proactif.metier.Service.ServiceMetier;
 import fr.insalyon.dasi.proactif.metier.Service.ServiceUtile;
@@ -12,6 +14,8 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -35,6 +39,7 @@ public class ActionServlet extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.text.ParseException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ParseException {
@@ -42,6 +47,17 @@ public class ActionServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             //Service s= new Service();
             String todo =request.getParameter("action");
+            
+            // DEBUG:
+//            Enumeration en=request.getParameterNames();
+// 
+//            while(en.hasMoreElements()){
+//                Object objOri=en.nextElement();
+//                String param=(String)objOri;
+//                String value=request.getParameter(param);
+//                System.out.println("Parameter Name is '"+param+"' and Parameter Value is '"+value+"'");
+//            }
+            
             switch (todo) {
                 case "connecter":{
                     String login= request.getParameter("login");
@@ -50,9 +66,9 @@ public class ActionServlet extends HttpServlet {
                     System.out.println("usertype: "+usertype);
                     Personne p=ServiceMetier.chercherPersonneMailEtMdp(login,password);
                     if((p!=null) && authentify(p,usertype)){
-                        printDetailConnection(out,"OK");
+                        printDetailConnection(out,"OK",p.getId());
                     }else{
-                        printDetailConnection(out, "KO");
+                        printDetailConnection(out, "KO",0);
                     }    
                     break;
                 }
@@ -84,6 +100,19 @@ public class ActionServlet extends HttpServlet {
                     //   Livraison i = new Livraison ();
                     //}
                     //boolean conf = ServiceMetier.creerIntervention(i);
+                    break;
+                }
+                case "consulterInterventionEnCours":{
+                    String idEmploye=request.getParameter("IdEmploye");
+                    System.out.println("idEmploye : "+idEmploye);
+                    int id=Integer.parseInt(idEmploye);
+                    Employe e =ServiceUtile.chercherEmployeId(id);
+                    List<Intervention> historique = ServiceMetier.historiqueEmploye(e);
+                    if((historique!=null)&&(!historique.isEmpty())){
+                        printInterventionActive(out,historique.get(historique.size()-1));
+                    }else{
+                        printInterventionActive(out,null);
+                    }
                     break;
                 }
             }
@@ -130,10 +159,13 @@ public class ActionServlet extends HttpServlet {
 //        out.println(gson.toJson(container));
 //    }
 //    
-    protected void printDetailConnection(PrintWriter out, String connection){
+    protected void printDetailConnection(PrintWriter out, String connection, int id){
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
-        JsonObject container = new JsonObject();
-        container.addProperty("Authentification",connection);
+        JsonObject jsonConnexion = new JsonObject();
+        jsonConnexion.addProperty("Authentification",connection);
+        jsonConnexion.addProperty("Id",id);
+        JsonObject container= new JsonObject();
+        container.add("Connexion", jsonConnexion);
         out.println(gson.toJson(container));
     }
     
@@ -152,6 +184,36 @@ public class ActionServlet extends HttpServlet {
         out.println(gson.toJson(container)); 
     }
     
+    protected void printInterventionActive(PrintWriter out, Intervention i){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonObject jsonIntervention= new JsonObject();
+        if(i!=null){
+            JsonObject jsonInterventionClient= new JsonObject();
+            jsonInterventionClient.addProperty("idClient",i.getClient().getId());
+            jsonInterventionClient.addProperty("nomClient",i.getClient().getNom());
+            jsonInterventionClient.addProperty("prenomClient",i.getClient().getPrenom());
+            jsonInterventionClient.addProperty("mailClient",i.getClient().getMail());
+            jsonInterventionClient.addProperty("adresseClient",i.getClient().getAdressePost());
+            jsonInterventionClient.addProperty("numtelClient",i.getClient().getNumTel());
+            
+            jsonIntervention.add("client",jsonInterventionClient);
+            jsonIntervention.addProperty("type",i.getType());
+            jsonIntervention.addProperty("description",i.getDescription());
+            jsonIntervention.addProperty("exist",true);
+            if(i.getDateTermine()==null){
+                jsonIntervention.addProperty("active",true);
+            }else{
+                jsonIntervention.addProperty("active",false);
+            } 
+        }else{
+            jsonIntervention.addProperty("exist",false);
+        }
+        JsonObject container = new JsonObject();
+        container.add("intervention",jsonIntervention);
+        out.println(gson.toJson(container)); 
+    }
+    
+    
     protected boolean authentify(Personne p, String usertype){        
         boolean authentification;
         if(usertype.equals("employe")){
@@ -163,6 +225,29 @@ public class ActionServlet extends HttpServlet {
             authentification= (p.getNom().equals(c.getNom()))&&(p.getPrenom().equals(c.getPrenom()))&&(p.getDateNaiss()==c.getDateNaiss());
             return authentification;
         }
+    }
+    
+    protected void printListIntervention(PrintWriter out, List<Intervention> interventions){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonArray jsonListe= new JsonArray();
+        for(Intervention i : interventions) {
+            JsonObject jsonIntervention= new JsonObject();
+            jsonIntervention.addProperty("type",i.getType());
+            jsonIntervention.addProperty("description",i.getDescription());
+            JsonObject jsonInterventionClient= new JsonObject();
+            jsonInterventionClient.addProperty("idClient",i.getClient().getId());
+            jsonInterventionClient.addProperty("civiliteClient",i.getClient().getCivilite());
+            jsonInterventionClient.addProperty("nomClient",i.getClient().getNom());
+            jsonInterventionClient.addProperty("prenomClient",i.getClient().getPrenom());
+            jsonInterventionClient.addProperty("mailClient",i.getClient().getMail());
+            jsonInterventionClient.addProperty("adresseClient",i.getClient().getAdressePost());
+            jsonInterventionClient.addProperty("numtelClient",i.getClient().getNumTel());
+            jsonIntervention.add("client",jsonInterventionClient);
+            jsonListe.add(jsonIntervention);
+        }
+        JsonObject container = new JsonObject();
+        container.add("interventions",jsonListe);
+        out.println(gson.toJson(container));
     }
 
     @Override

@@ -49,7 +49,7 @@ and open the template in the editor.
                 var champUserType= $("input[name='usertype']:checked").val();
                 console.log(champUserType);
                 if((champLogin.length == 0) || (champPassword.length == 0) ){
-                    $('#message').html('Veuillez remplir tous les champs');
+                    alert('Veuillez remplir tous les champs');
                 }else{
                     $('#message').html('Connexion en cours');
                     $.ajax({
@@ -63,13 +63,15 @@ and open the template in the editor.
                         },
                         dataType: 'json'
                     }).done(function (data) {;
-                        var connection=data.Authentification;
+                        var connection=data.Connexion.Authentification;
+                        var id=data.Connexion.Id;
                         if(connection=="OK" && champUserType=="employe"){
                             // si connexion ok, aller sur la page suivante :
-                            window.location = "EmployeConnecte.html";
+                            window.location = "EmployeConnecte.html?id="+id;
                         }else if (connection=="OK" && champUserType=="utilisateur"){
-                            window.location = "ClientConnecte.html";
+                            window.location = "ClientConnecte.html?id="+id;
                         }else{
+                            $('#message').empty();
                         // si connexion pas ok afficher un texte dans la div message :
                             alert('Echec de la connexion');
                         }

@@ -8,26 +8,82 @@ and open the template in the editor.
     <head>
         <title>Espace Employé</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <a href="EmployeConnecte.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
+        <a href ><img src="./img/logo.png" alt="Logo" width="100" height="100" onclick=redirectAccueil()></a>
         <input type='button' name='button1' value='Se déconnecter' onclick="self.location.href='Proactif.html'">
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
         
-    <center>
-        
-        
-        
-        <img src="./img/star.png" alt="Star" height="42" width="42">
-        <!-- Réaliser un cadre contenant les informations -->
-        <h2>Intervention en cours :</h2> <br/>
-        Intervention : descriptif de l'intervention à réaliser <br/>
-        <input type='button' name='button3' value='Cloturer'>
-        <img src="./img/star.png" alt="Star" height="42" width="42">
-        <br/><br/>
-        <input type='button' name='button2' value='Tableau de bord' onclick="self.location.href='TableauDeBord.html'"> 
-    </center>
+        <center>
+            <img src="./img/star.png" alt="Star" height="42" width="42">
+            <!-- Réaliser un cadre contenant les informations -->
+            <h2>Intervention en cours :</h2> <br/>
+            Intervention : descriptif de l'intervention à réaliser <br/>
+            <ul id="liste-interventions">
+            </ul>
+            <input type='button' name='button3' value='Cloturer' onclick=redirectCloture()>
+            <img src="./img/star.png" alt="Star" height="42" width="42">
+            <br/><br/>
+            <input type='button' name='button2' value='Tableau de bord' onclick=redirectTdB()> 
+        </center>
+    
+        <script>
+            
+            function redirectAccueil(){
+                window.location = "EmployeConnecte.html?id="+id;
+            }
+            
+            function redirectCloture(){
+                window.location = "ClotureIntervention.html?id="+id;
+            }
+            
+            function redirectTdB(){
+                window.location = "TableauDeBord.html?id="+id;
+            }
+            function ajouter(intervention) {
+                if(intervention.active){
+                    active="Intervention active";
+                }else{
+                    active="Intervention cloturée"
+                }
+                $('#liste-interventions').append('<p> Type d\'intervention: '+intervention.type+', '+active+'<\p>'
+                                                  +'<p> Description de l\'intervention: '+intervention.description+'<\p>'
+                                                  +'<p> [Client: <\p>'
+                                                  +'<p>    idClient: ' +intervention.client.idClient+'<\p>'
+                                                  +'<p>    Identite: '+intervention.client.nomClient+' '+intervention.client.prenomClient+'<\p>'
+                                                  +'<p>    Adresse: '+intervention.client.adresseClient+'<\p>'
+                                                  +'<p>    Telephone: '+intervention.client.numtelClient+'<\p>'
+                                                  +'<p>  ]  </p>');
+            }
+            
+            function afficherErreur(){
+                $('#liste-interventions').append('<p> Vous n\'avez pas eu d\'intervention active pour aujourd\'hui !</p>');
+            }
+            
+            $(document).ready(function () {
+                var parameters = location.search.substring(1).split("=");
+                id = unescape(parameters[1]);
+                $.ajax({
+                    url: './ActionServlet',
+                    method: 'POST',
+                    data: {
+                        action: 'consulterInterventionEnCours',
+                        IdEmploye: id
+                    },
+                    dataType: 'json'
+                }).done(function (data) {
+                    $('#liste-interventions').empty();
+                    var intervention = data.intervention;
+                    if(intervention.exist==true){
+                        ajouter(intervention);
+                    }else{
+                        afficherErreur();
+                    }
+                });
+            });
+            
+        </script>
     </body>
 </html>
