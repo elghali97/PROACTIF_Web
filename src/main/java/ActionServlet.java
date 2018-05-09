@@ -131,7 +131,6 @@ public class ActionServlet extends HttpServlet {
                 case "consulterInterventionEnCours":{
                     
                     String idEmploye=request.getParameter("IdEmploye");
-                    System.out.println("idEmploye : "+idEmploye);
                     int id=Integer.parseInt(idEmploye);
                     Employe e =ServiceUtile.chercherEmployeId(id);
                     List<Intervention> historique = ServiceMetier.historiqueEmploye(e);
@@ -142,6 +141,21 @@ public class ActionServlet extends HttpServlet {
                     }
                     break;
                     
+                }
+                case "cloturerIntervention":{
+                    String idIntervention=request.getParameter("idIntervention");
+                    int id=Integer.parseInt(idIntervention);
+                    String heure=request.getParameter("hour"); 
+                    String commentaire=request.getParameter("commentaire");
+                    Date d= new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    String s= sdf.format(d);
+                    s=s+" "+heure;
+                    SimpleDateFormat sdfh = new SimpleDateFormat("dd/MM/yyyy HH");
+                    Date date = sdfh.parse(s);
+                    boolean cloture=ServiceMetier.clotureIntervention(id, date, commentaire);
+                    printDetailCloture(out,cloture);
+                    break;
                 }
                 
 //            if (q==null){
@@ -167,6 +181,13 @@ public class ActionServlet extends HttpServlet {
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         JsonObject container = new JsonObject();
         container.addProperty("Inscription",result);
+        out.println(gson.toJson(container));
+    }
+    
+    protected void printDetailCloture(PrintWriter out, boolean result){
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        JsonObject container = new JsonObject();
+        container.addProperty("cloture",result);
         out.println(gson.toJson(container));
     }
     
@@ -233,6 +254,7 @@ public class ActionServlet extends HttpServlet {
             jsonInterventionClient.addProperty("numtelClient",i.getClient().getNumTel());
             
             jsonIntervention.add("client",jsonInterventionClient);
+            jsonIntervention.addProperty("idIntervention",i.getIdIntervention());
             jsonIntervention.addProperty("type",i.getType());
             jsonIntervention.addProperty("description",i.getDescription());
             jsonIntervention.addProperty("exist",true);
@@ -268,6 +290,7 @@ public class ActionServlet extends HttpServlet {
         JsonArray jsonListe= new JsonArray();
         for(Intervention i : interventions) {
             JsonObject jsonIntervention= new JsonObject();
+            jsonIntervention.addProperty("idIntervention",i.getIdIntervention());
             jsonIntervention.addProperty("type",i.getType());
             jsonIntervention.addProperty("description",i.getDescription());
             JsonObject jsonInterventionClient= new JsonObject();

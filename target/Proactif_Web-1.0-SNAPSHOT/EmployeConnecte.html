@@ -21,9 +21,8 @@ and open the template in the editor.
             <!-- Réaliser un cadre contenant les informations -->
             <h2>Intervention en cours :</h2> <br/>
             Intervention : descriptif de l'intervention à réaliser <br/>
-            <ul id="liste-interventions">
-            </ul>
-            <input type='button' name='button3' value='Cloturer' onclick=redirectCloture()>
+            <ul id="liste-interventions"></ul>
+            <p></p>
             <img src="./img/star.png" alt="Star" height="42" width="42">
             <br/><br/>
             <input type='button' name='button2' value='Tableau de bord' onclick=redirectTdB()> 
@@ -32,19 +31,25 @@ and open the template in the editor.
         <script>
             
             function redirectAccueil(){
-                window.location = "EmployeConnecte.html?id="+id;
+                window.location = "EmployeConnecte.html?id"+id;
+            }
+            
+            function displayButtonCloture() {
+                $('p').append('<input type="button" name="button3" value="Cloturer" onclick=redirectCloture()>');
             }
             
             function redirectCloture(){
-                window.location = "ClotureIntervention.html?id="+id;
+                window.location = "ClotureIntervention.html?idE="+id+"&idI="+idIntervention;
             }
             
             function redirectTdB(){
                 window.location = "TableauDeBord.html?id="+id;
             }
+
             function ajouter(intervention) {
                 if(intervention.active){
                     active="Intervention active";
+                    displayButtonCloture();
                 }else{
                     active="Intervention cloturée"
                 }
@@ -54,8 +59,7 @@ and open the template in the editor.
                                                   +'<p>    idClient: ' +intervention.client.idClient+'<\p>'
                                                   +'<p>    Identite: '+intervention.client.nomClient+' '+intervention.client.prenomClient+'<\p>'
                                                   +'<p>    Adresse: '+intervention.client.adresseClient+'<\p>'
-                                                  +'<p>    Telephone: '+intervention.client.numtelClient+'<\p>'
-                                                  +'<p>  ]  </p>');
+                                                  +'<p>    Telephone: '+intervention.client.numtelClient+']</p>');
             }
             
             function afficherErreur(){
@@ -76,6 +80,7 @@ and open the template in the editor.
                 }).done(function (data) {
                     $('#liste-interventions').empty();
                     var intervention = data.intervention;
+                    idIntervention=intervention.idIntervention;
                     if(intervention.exist==true){
                         ajouter(intervention);
                     }else{
