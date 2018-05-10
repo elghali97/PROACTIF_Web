@@ -104,8 +104,6 @@ public class ActionServlet extends HttpServlet {
                     String idClient = request.getParameter("idClient");
                     int id = Integer.parseInt(idClient);
                     Client client = ServiceUtile.chercherClientId(id);
-                    //!!!!!!! Définir date du jour !!!!!!!!!!!!!!!!!!!!!
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     Date currentDate = new Date();
                     Intervention i;
                     if (type.equals("Livraison")) {

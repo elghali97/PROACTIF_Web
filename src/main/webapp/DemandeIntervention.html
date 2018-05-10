@@ -60,9 +60,6 @@ and open the template in the editor.
             });
     
             function creerIntervention(idClient) {
-                //var type = $("select[name='liste']").val(); // ne fonctionne pas !!!!!!!!
-                //'#liste'
-                //"input[name='usertype']:checked"
                 var type = document.getElementById("liste").value;
                 console.log("Type de l'intervention " + type);
                 var objet = $('#objet').val();
@@ -98,11 +95,6 @@ and open the template in the editor.
             $(document).ready(function () {
                 var parameters = location.search.substring(1).split("=");
                 idClient = unescape(parameters[1]);
-                /*var parameters = location.search.substring(1).split("&");
-
-                var temp = parameters[0].split("=");
-                idClient = unescape(temp[1]);*/
-                
                 console.log("Identifiant client " + idClient);
                 
                 $('#Valider').on('click', function () {
