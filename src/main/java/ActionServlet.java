@@ -17,7 +17,6 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,7 +96,6 @@ public class ActionServlet extends HttpServlet {
                     break;
                 }
                 case "intervention":{
-                    
                     String type = request.getParameter("type");
                     String objet = request.getParameter("objet");
                     String entreprise = request.getParameter("entreprise");
@@ -106,7 +104,7 @@ public class ActionServlet extends HttpServlet {
                     String idClient = request.getParameter("idClient");
                     int id = Integer.parseInt(idClient);
                     Client client = ServiceUtile.chercherClientId(id);
-                    //!!!!!!! Définir date du jour
+                    //!!!!!!! Définir date du jour !!!!!!!!!!!!!!!!!!!!!
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     Date currentDate = new Date();
                     Intervention i;
@@ -120,12 +118,6 @@ public class ActionServlet extends HttpServlet {
                     boolean conf = ServiceMetier.creerIntervention(i);
                     printDetailIntervention(out, conf);
                     break;
-                    // if (type.equals("Incident")) {
-                    //    Incident i = new Incident (description, date, client);
-                    // } else if (type.equals("Livraison")) {
-                    //   Livraison i = new Livraison ();
-                    //}
-                    //boolean conf = ServiceMetier.creerIntervention(i);
                     
                 }
                 case "consulterInterventionEnCours":{
@@ -142,6 +134,17 @@ public class ActionServlet extends HttpServlet {
                     break;
                     
                 }
+                
+                case "consulterHistoriqueClient" :{
+                    String idClient = request.getParameter("idClient");
+                    int id = Integer.parseInt(idClient);
+                    Client c = ServiceUtile.chercherClientId(id);
+                    List<Intervention> historique = ServiceMetier.historiqueClient(c);
+                    printListIntervention(out,historique);
+                    
+                    break;
+                }
+                
                 case "cloturerIntervention":{
                     String idIntervention=request.getParameter("idIntervention");
                     int id=Integer.parseInt(idIntervention);

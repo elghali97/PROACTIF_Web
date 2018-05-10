@@ -20,14 +20,14 @@ and open the template in the editor.
         <br/>
         Type : 
         <select name="liste" id="liste" size="1">
-            <option value="value1">Incident</option>
-            <option value="value2">Livraison</option>
-            <option value="value3">Animal</option>
+            <option value="Incident">Incident</option>
+            <option value="Livraison">Livraison</option>
+            <option value="Animal">Animal</option>
         </select><br/><br/>
         <p></p>
         Description : 
         <input type="text" name="text2" id="description" placeholder="Ajouter une description" /><br/><br/>
-        <input type='button' name='button2' value='Valider' onclick="window.location.href='ClientConnecte.html'"> 
+        <input type='button' name='button2' id="Valider" value='Valider'> 
         
         <script>
             function afficherObjetLivraison() {
@@ -50,36 +50,32 @@ and open the template in the editor.
                 // ajout d'un "handler" sur le clic du bouton de connexion
                 var e = document.getElementById("liste");
                 var strType = e.options[e.selectedIndex].value;
-                if(strType=="value2"){
+                effacer();
+                if(strType=="Livraison"){
                     afficherObjetLivraison();
                     afficherLivraison();
-                    effacer();
-                } else if (strType=="value3") {
+                } else if (strType=="Animal") {
                     afficherAnimal();
-                    effacer();
-                    effacer();
-                } else if (strType=="value1") {
-                    effacer();
-                    effacer();
-                    effacer(); // Fonctionnement à vérifier
-                } 
-                
+                }                 
             });
     
-            function creerIntervention() {
-                var type = $('#liste').val();
+            function creerIntervention(idClient) {
+                //var type = $("select[name='liste']").val(); // ne fonctionne pas !!!!!!!!
+                //'#liste'
+                //"input[name='usertype']:checked"
+                var type = document.getElementById("liste").value;
+                console.log("Type de l'intervention " + type);
                 var objet = $('#objet').val();
                 var entreprise = $('#entreprise').val();
                 var animal = $('#animal').val();
                 var description = $('#description').val();
-                
+                console.log("Récupération des données");
                  $.ajax({
                         url: './ActionServlet',
                         method: 'POST',
                         data: {
                             action: 'intervention',
-                            //je dois également envoyer id du client
-                            //id: id,
+                            idClient: idClient,
                             type: type,
                             objet: objet,
                             entreprise: entreprise,
@@ -88,15 +84,34 @@ and open the template in the editor.
                         },
                         dataType: 'json'
                     }).done(function (data) {
+                        console.log("Confirmation reçue");
                         var confIntervention = data.Intervention;
                         if (confIntervention) {
                             alert('Demande d\'intervention envoyée');
-                            window.location = "ClientConnecte.html";
+                            window.location = "ClientConnecte.html?idClient="+idClient;
                         } else {
                             alert('Echec de l\'envoie de demande d\'intervention, veuillez réessayer plus tard');
                         }
                     });
             }
+            
+            $(document).ready(function () {
+                var parameters = location.search.substring(1).split("=");
+                idClient = unescape(parameters[1]);
+                /*var parameters = location.search.substring(1).split("&");
+
+                var temp = parameters[0].split("=");
+                idClient = unescape(temp[1]);*/
+                
+                console.log("Identifiant client " + idClient);
+                
+                $('#Valider').on('click', function () {
+                    // affichage pour debugage dans la console javascript du navigateur
+                    console.log('Click sur le bouton "Valider"');
+                    // appel de la fonction creerIntervention
+                    creerIntervention(idClient);
+                });
+            });
         </script>
     </body>
     
