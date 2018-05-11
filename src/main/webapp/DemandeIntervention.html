@@ -12,7 +12,7 @@ and open the template in the editor.
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <a href="ClientConnecte.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
+        <a href><img src="./img/logo.png" alt="Logo" width="100" height="100" onclick=redirectAccueil()></a>
         <input type='button' name='button1' value='Se déconnecter' onclick="self.location.href='Proactif.html'">
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
@@ -30,6 +30,10 @@ and open the template in the editor.
         <input type='button' name='button2' id="Valider" value='Valider'> 
         
         <script>
+            function redirectAccueil(){
+                window.location = "ClientConnecte.html?idClient"+idClient;
+            }
+    
             function afficherObjetLivraison() {
                 $('p').append(' Objet à livrer : <input type="text" name="text3" id="objet" placeholder="Préciser l\'objet à livrer" /><br/><br/> ');
             }

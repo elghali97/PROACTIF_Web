@@ -12,7 +12,7 @@ and open the template in the editor.
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <a href="ClientConnecte.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
+        <a href><img src="./img/logo.png" alt="Logo" width="100" height="100" onclick=redirectAccueil()></a>
         <input type='button' name='button1' value='Se déconnecter' onclick="self.location.href='Proactif.html'">
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
@@ -30,7 +30,7 @@ and open the template in the editor.
                     <img src="./img/cloche.jpg" alt="Cloche" height="42" width="42">
                 </th>
             </tr>
-        <p></p>
+        
             <!--<tr>
                 <th>Intervention :</th>
             </tr>
@@ -40,6 +40,7 @@ and open the template in the editor.
         </tbody>
         </table>
         
+        <ul id="liste-interventions"></ul>
         
         <h1>
             <img src="./img/star.png" alt="Star" height="42" width="42">
@@ -49,13 +50,16 @@ and open the template in the editor.
     </center>
     
     <script>
+        function redirectAccueil(){
+            window.location = "ClientConnecte.html?idClient"+idClient;
+        }
+    
         function demanderIntervention (idClient) {
             window.location = "DemandeIntervention.html?idClient="+idClient;
         }
         
         function afficherHistorique (intervention) {
-            //$('p').append(<tr><th>Intervention</th></tr>);
-            $('p').append('<p> Type d\'intervention: '+intervention.type+'<\p>'
+            $('#liste-interventions').append('<p> Type d\'intervention: '+intervention.type+'<\p>'
                                                   +'<p> Description de l\'intervention: '+intervention.description+'<\p>'
                                                   +'<p> [Client: <\p>'
                                                   +'<p>    Identite: '+intervention.client.nomClient+' '+intervention.client.prenomClient+'<\p>'
@@ -83,12 +87,7 @@ and open the template in the editor.
                     console.log("infos récupérées");
                     console.log("Intervention à afficher "+ intervention);
                     afficherHistorique(intervention);
-                    //idIntervention=intervention.idIntervention;
-                    /*if(intervention.exist==true){
-                        ajouter(intervention);
-                    }else{
-                        afficherErreur();
-                    }*/
+                    
                 });
             });
     </script>
