@@ -11,7 +11,7 @@ and open the template in the editor.
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <a><img src="./img/logo.png" alt="Logo" width="100" height="100" onclick=redirectAccueil()></a>
+        <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
         <input type='button' name='button1' value='Se déconnecter' onclick="self.location.href='Proactif.html'">
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>

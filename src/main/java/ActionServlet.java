@@ -159,6 +159,21 @@ public class ActionServlet extends HttpServlet {
                     break;
                 }
                 
+                case "ConsulterHistoriqueEmploye":{
+                    String idEmploye=request.getParameter("IdEmploye");
+                    int id=Integer.parseInt(idEmploye);
+                    Employe e =ServiceUtile.chercherEmployeId(id);
+                    double latEmploye=e.getLatitudeLongitude().lat;
+                    double lngEmploye=e.getLatitudeLongitude().lng;
+                    List<Intervention> historique = ServiceMetier.historiqueEmploye(e);
+                    if((historique!=null)){
+                        printListIntervention(out,historique,latEmploye,lngEmploye);
+                    }else{
+                        printListIntervention(out,null,latEmploye,lngEmploye);
+                    }
+                    break;
+                }
+                
 //            if (q==null){
 //                List<Service.Personne> personnes = s.consulterListePersonnes();
 //                printListPersonne(out,personnes);
@@ -286,25 +301,73 @@ public class ActionServlet extends HttpServlet {
         }
     }
     
+    
+    protected void printListIntervention(PrintWriter out, List<Intervention> interventions, double lat, double lng){
+        
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonArray jsonListe= new JsonArray();
+        
+        if(interventions!=null){
+            
+            for(Intervention i : interventions) {
+
+                JsonObject jsonInterventionClient= new JsonObject();
+                jsonInterventionClient.addProperty("idClient",i.getClient().getId());
+                jsonInterventionClient.addProperty("civiliteClient",i.getClient().getCivilite());
+                jsonInterventionClient.addProperty("nomClient",i.getClient().getNom());
+                jsonInterventionClient.addProperty("prenomClient",i.getClient().getPrenom());
+                jsonInterventionClient.addProperty("mailClient",i.getClient().getMail());
+                jsonInterventionClient.addProperty("adresseClient",i.getClient().getAdressePost());
+                jsonInterventionClient.addProperty("numtelClient",i.getClient().getNumTel());
+                jsonInterventionClient.addProperty("latitude", i.getClient().getLatitudeLongitude().lat);
+                jsonInterventionClient.addProperty("longitude", i.getClient().getLatitudeLongitude().lng);
+
+                JsonObject jsonIntervention= new JsonObject();
+                jsonIntervention.addProperty("idIntervention",i.getIdIntervention());
+                jsonIntervention.addProperty("type",i.getType());
+                jsonIntervention.addProperty("description",i.getDescription());
+                jsonIntervention.add("client",jsonInterventionClient);
+                jsonListe.add(jsonIntervention);
+            }
+        }
+            
+        JsonObject jsonInterventionEmploye=new JsonObject();
+        jsonInterventionEmploye.addProperty("latitude", lat);
+        jsonInterventionEmploye.addProperty("longitude",lng );
+
+        JsonObject container = new JsonObject();
+        container.add("interventions",jsonListe);
+        container.add("employe",jsonInterventionEmploye);
+        out.println(gson.toJson(container));
+
+
+    }
+    
     protected void printListIntervention(PrintWriter out, List<Intervention> interventions){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonArray jsonListe= new JsonArray();
-        for(Intervention i : interventions) {
-            JsonObject jsonIntervention= new JsonObject();
-            jsonIntervention.addProperty("idIntervention",i.getIdIntervention());
-            jsonIntervention.addProperty("type",i.getType());
-            jsonIntervention.addProperty("description",i.getDescription());
-            JsonObject jsonInterventionClient= new JsonObject();
-            jsonInterventionClient.addProperty("idClient",i.getClient().getId());
-            jsonInterventionClient.addProperty("civiliteClient",i.getClient().getCivilite());
-            jsonInterventionClient.addProperty("nomClient",i.getClient().getNom());
-            jsonInterventionClient.addProperty("prenomClient",i.getClient().getPrenom());
-            jsonInterventionClient.addProperty("mailClient",i.getClient().getMail());
-            jsonInterventionClient.addProperty("adresseClient",i.getClient().getAdressePost());
-            jsonInterventionClient.addProperty("numtelClient",i.getClient().getNumTel());
-            jsonIntervention.add("client",jsonInterventionClient);
-            jsonListe.add(jsonIntervention);
+        if(interventions!=null){
+            
+            for(Intervention i : interventions) {
+
+                JsonObject jsonInterventionClient= new JsonObject();
+                jsonInterventionClient.addProperty("idClient",i.getClient().getId());
+                jsonInterventionClient.addProperty("civiliteClient",i.getClient().getCivilite());
+                jsonInterventionClient.addProperty("nomClient",i.getClient().getNom());
+                jsonInterventionClient.addProperty("prenomClient",i.getClient().getPrenom());
+                jsonInterventionClient.addProperty("mailClient",i.getClient().getMail());
+                jsonInterventionClient.addProperty("adresseClient",i.getClient().getAdressePost());
+                jsonInterventionClient.addProperty("numtelClient",i.getClient().getNumTel());
+
+                JsonObject jsonIntervention= new JsonObject();
+                jsonIntervention.addProperty("idIntervention",i.getIdIntervention());
+                jsonIntervention.addProperty("type",i.getType());
+                jsonIntervention.addProperty("description",i.getDescription());
+                jsonIntervention.add("client",jsonInterventionClient);
+                jsonListe.add(jsonIntervention);
+            }
         }
+        
         JsonObject container = new JsonObject();
         container.add("interventions",jsonListe);
         out.println(gson.toJson(container));

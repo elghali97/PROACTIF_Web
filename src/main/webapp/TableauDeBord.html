@@ -7,15 +7,16 @@ and open the template in the editor.
 <html>
     <head>
         <title>Tableau de Bord</title>
-        <style>
-            #map {
-              height: 400px;
-              width: 100%;
-             }
+        <style type="text/css">
+            html, body { height: 100%; margin: 0; padding: 0; }
+            h1 { text-align: center; }
+            #map { height: 80%; }
         </style>
+        <meta charset="UTF-8">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <a href="EmployeConnecte.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
+        <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
         <input type='button' name='button1' value='Se déconnecter' onclick="self.location.href='Proactif.html'">
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
@@ -23,21 +24,109 @@ and open the template in the editor.
         <div id="map"></div>
         <script>
             
+            $(document).ready(function () {
+                var parameters = location.search.substring(1).split("=");
+                idEmploye= unescape(parameters[1]);
+                $.ajax({
+                    url: './ActionServlet',
+                    method: 'POST',
+                    data: {
+                        action: 'ConsulterHistoriqueEmploye',
+                        IdEmploye: idEmploye
+                    },
+                    dataType: 'json'
+                }).done(function (data) {
+                    var employe=data.employe;
+                    latitude=employe.latitude;
+                    longitude=employe.longitude;
+                    var interventions=data.interventions;
+                    centerMap(latitude,longitude);
+                    displayPositionEmployee(latitude,longitude);
+                    generateMarkers(interventions);
+                });
+            });
+            
+            function centerMap(latitude,longitude){
+                googleMapInstance = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: latitude, lng: longitude},
+                    zoom: 13
+                });
+            }
+            
+            function displayPositionEmployee(latitude,longitude){
+                
+                var infowindow = makeInfoWindow('');
+
+                var marker = new google.maps.Marker({
+                    map: googleMapInstance,
+                    position: {lat: latitude, lng: longitude},
+                    title: "Votre Position",
+                    icon: {url: './img/bird.png', scaledSize: new google.maps.Size(32, 32)}
+                });
+
+                marker.addListener('click', function () {
+
+                    infowindow.setContent('<div>Information: ' + marker.title + '</div>');
+                    infowindow.open(googleMapInstance, marker);
+                });
+            }
+            
+            function redirectAccueil(){
+                window.location = "EmployeConnecte.html?id="+idEmploye;
+            }
+            
+            var googleMapInstance = null;
+
+            function makeInfoWindow(title) {
+                return new google.maps.InfoWindow({
+                    content: '<div>Information: ' + title + '</div>'
+                });
+            }
+
+            function attachInfoWindow(marker, infowindow, htmlDescription) {
+                marker.addListener('click', function () {
+
+                    infowindow.setContent(htmlDescription);
+                    infowindow.open(googleMapInstance, this);
+                });
+            }
+
             function initMap() {
-              var uluru = {lat: 45.750000, lng: 4.850000};
-              var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 4,
-                center: uluru
-              });
-              var marker = new google.maps.Marker({
-                position: uluru,
-                map: map
-              });
+            }
+            
+            function displayDetail(information){
+                alert("Mon id:"+information.idIntervention);
+            }
+            
+            function generateMarkers(interventions) {
+
+                // Petite popup Google Maps
+                var infowindow = makeInfoWindow('');
+
+                for (var i = 0; i < interventions.length; i++) {
+
+                    iconImage = {url: './img/UnderConstruction.png', scaledSize: new google.maps.Size(32, 32)}
+                    var client= interventions[i].client;
+                    
+                    var marker = new google.maps.Marker({
+                        map: googleMapInstance,
+                        position: {lat: client.latitude, lng: client.longitude},
+                        title: 'Intervention #' + interventions[i].idIntervention,
+                        icon: iconImage
+                    });
+
+                    attachInfoWindow(
+                            marker, infowindow,
+                            '<div><strong>Intervention #' + interventions[i].idIntervention + '</a></strong>'+
+                            '<br/>Type:  ' + interventions[i].type +
+                            '<br/>'+'<a style="cursor: pointer; cursor: hand;">En savoir plus...</a>'
+                            );
+                }
+
             }
             
         </script>
-        <script async defer
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDcVVJjfmxsNdbdUYeg9MjQoJJ6THPuap4&callback=initMap">
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAklw96N9rLd93ubr-F04CN7qi2ryKayAc&callback=initMap">
         </script>
     </body>
 </html>
