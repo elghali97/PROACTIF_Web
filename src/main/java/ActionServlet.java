@@ -81,7 +81,9 @@ public class ActionServlet extends HttpServlet {
                     String civilite = request.getParameter("civilite");
                     String name = request.getParameter("name");
                     String surname = request.getParameter("surname");
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    //SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    //Type de date différent selon l'ordinateur utilisé !!
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     String d = request.getParameter("borndate");
                     Date borndate = sdf.parse(d);
                     String postcode = request.getParameter("postcode");
@@ -196,7 +198,8 @@ public class ActionServlet extends HttpServlet {
     protected void printDetailInscription(PrintWriter out, boolean result){
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         JsonObject container = new JsonObject();
-        container.addProperty("Inscription",result);
+        container.addProperty("inscription",result);
+        System.out.println(gson.toJson(container));
         out.println(gson.toJson(container));
     }
     

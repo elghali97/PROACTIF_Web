@@ -84,26 +84,26 @@ and open the template in the editor.
                 var password = $('#password').val();
                 
                 console.log("Envoie des informations enregistrées");
-               $.ajax({
-                        url: './ActionServlet',
-                        method: 'POST',
-                        data: {
-                            action: 'inscription',
-                            civilite: civilite,
-                            name: name,
-                            surname: surname,
-                            borndate: borndate,
-                            postcode: postcode,
-                            city: city,
-                            street: street,
-                            telephone: telephone,
-                            mail: mail,
-                            password: password
-                        },
-                        dataType: 'json'
-                    }).done(function (data) {
-                        // si connexion ok, aller sur la page suivante :
-                        var confInscription = data.Inscription;
+                $.ajax({
+                    url: './ActionServlet',
+                    method: 'POST',
+                    data: {
+                        action: 'inscription',
+                        civilite: civilite,
+                        name: name,
+                        surname: surname,
+                        borndate: borndate,
+                        postcode: postcode,
+                        city: city,
+                        street: street,
+                        telephone: telephone,
+                        mail: mail,
+                        password: password
+                    },
+                    dataType: 'json'
+                }).done(function (data) {
+                    // si connexion ok, aller sur la page suivante :
+                        var confInscription = data.inscription;
                         console.log("Réponse inscription reçue");
                         if (confInscription) {
                             window.location = "FenetreConfirmation.html";
@@ -111,12 +111,11 @@ and open the template in the editor.
                             alert('Echec de l\'inscription');
                             // si connexion pas ok afficher un texte dans la div message :
                         }
-                    });
-                    
+                });
             }
             
+            
             $(document).ready(function () {
-                // ajout d'un "handler" sur le clic du bouton de connexion
                 $('#boutonConfirmer').on('click', function () {
                     // affichage pour debugage dans la console javascript du navigateur
                     console.log('Click sur le bouton "S\'inscrire"');
