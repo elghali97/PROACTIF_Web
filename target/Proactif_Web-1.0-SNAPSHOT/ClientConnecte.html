@@ -7,40 +7,40 @@ and open the template in the editor.
 <html>
     <head>
         <title>Espace Client</title>
+        <link rel="stylesheet" href="stylesheet.css">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
-        <input type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
-        <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
-        <hr/>
+        <div>
+            <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
+            <input type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
+            <hr/>
+        </div>
     
-    <center>
-        
-        <!-- Tableau historique des demandes -->
-        
-        <table width="35%" border="3" align="center">
+    <!-- Tableau historique des demandes -->
+    <br/><br/><br/>    
+    <table width="80%" border="3" align="center">
         <tbody>
             <tr>
-                <th>
+                <th id="titreTableau">
                     <img src="./img/cloche.jpg" alt="Cloche" height="42" width="42">
                     Historiques des demandes :
                     <img src="./img/cloche.jpg" alt="Cloche" height="42" width="42">
                 </th>
             </tr>
+            <tr><th id="interventionTableau"><ul id="liste-interventions"></ul></th></tr>
         </tbody>
-        </table>
-            <ul id="liste-interventions"></ul>
-            
-        <h1>
-            <img src="./img/star.png" alt="Star" height="42" width="42">
-            <input type='button' name='button2' value='Faire une nouvelle demande' onclick=demanderIntervention()>
-            <img src="./img/star.png" alt="Star" height="42" width="42">
-        </h1>
-    </center>
+    </table>
     
+    <br/>
+    <h1>
+        <img src="./img/star.png" alt="Star" height="42" width="42">
+        <input id="validerButton" type='button' name='button2' value='Faire une nouvelle demande' onclick=demanderIntervention()>
+        <img src="./img/star.png" alt="Star" height="42" width="42">
+    </h1>
+       
     <script>
         
         function deconnexion(){
@@ -71,8 +71,8 @@ and open the template in the editor.
         
         function afficherHistorique (intervention) {
             for (var i =0; i <intervention.length; i++) {
-               $('#liste-interventions').append('<li> Type d\'intervention: '+intervention[i].type+'<br/>'
-                                  +'Description de l\'intervention: '+intervention[i].description+'<br/></li>'); 
+                $('#liste-interventions').append('<li> Type : '+intervention[i].type+'<br/>'
+                                  +'Description : '+intervention[i].description+'<br/></li>'); 
             }
         }
             

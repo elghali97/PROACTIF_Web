@@ -8,8 +8,16 @@ and open the template in the editor.
     Author     : Charlene
 */
 
-div {
+#entete {
     background-color: #80b3ff
+}
+
+p {
+    text-align: center;
+}
+
+h1 {
+    text-align: center;
 }
 
 #titreAccueil {
@@ -20,18 +28,31 @@ div {
     text-align: center;
 }
 
-#star1 {
-    position: absolute;
-    top: 9em;
-    left: 22em;
+#titreTableau {
+    background-color: #E6E6E6
 }
 
-#star2 {
-    position: absolute;
-    top: 9em;
-    left: 62em;
+#interventionTableau {
+    background-color: #b3d1ff
 }
 
-p {
+#interventionFormulaire {
     text-align: center;
+    text-decoration: none;
+    font-family: Georgia, "Times New Roman",Times, serif;
+    font-weight : bold;
+    font-style: inherit;
+    font-size: large;
+}
+
+#validerButton {
+    background-color: #80b3ff; 
+    border: none;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
