@@ -25,6 +25,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 /**
@@ -45,7 +46,12 @@ public class ActionServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ParseException {
+        
+        HttpSession session=request.getSession(true);
+        request.setCharacterEncoding("UTF-8");
+        
         response.setContentType("application/json");
+        
         try (PrintWriter out = response.getWriter()) {
             //Service s= new Service();
             String todo =request.getParameter("action");
@@ -61,6 +67,7 @@ public class ActionServlet extends HttpServlet {
 //            }
             
             switch (todo) {
+                
                 case "connecter":{
                     
                     String login= request.getParameter("login");
@@ -69,9 +76,10 @@ public class ActionServlet extends HttpServlet {
                     System.out.println("usertype: "+usertype);
                     Personne p=ServiceMetier.chercherPersonneMailEtMdp(login,password);
                     if((p!=null) && authentify(p,usertype)){
-                        printDetailConnection(out,"OK",p.getId());
+                        session.setAttribute("id", p.getId());
+                        printDetailConnection(out,"OK");
                     }else{
-                        printDetailConnection(out, "KO",0);
+                        printDetailConnection(out, "KO");
                     }    
                     break;
                     
@@ -103,8 +111,7 @@ public class ActionServlet extends HttpServlet {
                     String entreprise = request.getParameter("entreprise");
                     String animal = request.getParameter("animal");
                     String description = request.getParameter("description");
-                    String idClient = request.getParameter("idClient");
-                    int id = Integer.parseInt(idClient);
+                    int id= (int) session.getAttribute("id");
                     Client client = ServiceUtile.chercherClientId(id);
                     Date currentDate = new Date();
                     Intervention i;
@@ -123,7 +130,7 @@ public class ActionServlet extends HttpServlet {
                 case "consulterInterventionEnCours":{
                     
                     String idEmploye=request.getParameter("IdEmploye");
-                    int id=Integer.parseInt(idEmploye);
+                    int id= (int) session.getAttribute("id");
                     Employe e =ServiceUtile.chercherEmployeId(id);
                     List<Intervention> historique = ServiceMetier.historiqueEmploye(e);
                     if((historique!=null)&&(!historique.isEmpty())){
@@ -136,12 +143,10 @@ public class ActionServlet extends HttpServlet {
                 }
                 
                 case "consulterHistoriqueClient" :{
-                    String idClient = request.getParameter("idClient");
-                    int id = Integer.parseInt(idClient);
+                    int id= (int) session.getAttribute("id");
                     Client c = ServiceUtile.chercherClientId(id);
                     List<Intervention> historique = ServiceMetier.historiqueClient(c);
                     printListIntervention(out,historique);
-                    
                     break;
                 }
                 
@@ -161,9 +166,8 @@ public class ActionServlet extends HttpServlet {
                     break;
                 }
                 
-                case "ConsulterHistoriqueEmploye":{
-                    String idEmploye=request.getParameter("IdEmploye");
-                    int id=Integer.parseInt(idEmploye);
+                case "consulterHistoriqueEmploye":{
+                    int id= (int) session.getAttribute("id");
                     Employe e =ServiceUtile.chercherEmployeId(id);
                     double latEmploye=e.getLatitudeLongitude().lat;
                     double lngEmploye=e.getLatitudeLongitude().lng;
@@ -176,30 +180,28 @@ public class ActionServlet extends HttpServlet {
                     break;
                 }
                 
-//            if (q==null){
-//                List<Service.Personne> personnes = s.consulterListePersonnes();
-//                printListPersonne(out,personnes);
-//            }else{
-//                String [] w=q.split("=");
-//                if (w.length==1){
-//                    List<Service.Personne> personnes = s.consulterListePersonnes();
-//                    printListPersonne(out,personnes);
-//                }else{
-//                    int id= Integer.parseInt(w[1]);
-//                    Service.Personne p = s.consulterDetailPersonne(id);
-//                    printDetailPersonne(out,p);
-//                }
-//            }
+                case "deconnexion":{
+                    session.setAttribute("id", null);
+                    printDetailDeconnexion(out, true);
+                    break;
+            }
+                
             }
             out.close();
         }
     }
     
+    protected void printDetailDeconnexion(PrintWriter out, boolean result){
+        Gson gson= new GsonBuilder().setPrettyPrinting().create();
+        JsonObject container = new JsonObject();
+        container.addProperty("deconnexion",result);
+        out.println(gson.toJson(container)); 
+    }
+    
     protected void printDetailInscription(PrintWriter out, boolean result){
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         JsonObject container = new JsonObject();
-        container.addProperty("inscription",result);
-        System.out.println(gson.toJson(container));
+        container.addProperty("Inscription",result);
         out.println(gson.toJson(container));
     }
     
@@ -235,11 +237,10 @@ public class ActionServlet extends HttpServlet {
 //        out.println(gson.toJson(container));
 //    }
 //    
-    protected void printDetailConnection(PrintWriter out, String connection, int id){
+    protected void printDetailConnection(PrintWriter out, String connection){
         Gson gson= new GsonBuilder().setPrettyPrinting().create();
         JsonObject jsonConnexion = new JsonObject();
         jsonConnexion.addProperty("Authentification",connection);
-        jsonConnexion.addProperty("Id",id);
         JsonObject container= new JsonObject();
         container.add("Connexion", jsonConnexion);
         out.println(gson.toJson(container));

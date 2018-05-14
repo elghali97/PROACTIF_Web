@@ -12,8 +12,8 @@ and open the template in the editor.
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <a href><img src="./img/logo.png" alt="Logo" width="100" height="100" onclick=redirectAccueil()></a>
-        <input type='button' name='button1' value='Se déconnecter' onclick="self.location.href='Proactif.html'">
+        <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
+        <input type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
     
@@ -36,18 +36,37 @@ and open the template in the editor.
             
         <h1>
             <img src="./img/star.png" alt="Star" height="42" width="42">
-            <input type='button' name='button2' value='Faire une nouvelle demande' onclick=demanderIntervention(idClient)>
+            <input type='button' name='button2' value='Faire une nouvelle demande' onclick=demanderIntervention()>
             <img src="./img/star.png" alt="Star" height="42" width="42">
         </h1>
     </center>
     
     <script>
+        
+        function deconnexion(){
+            $.ajax({
+                url: './ActionServlet',
+                method: 'POST',
+                data: {
+                    action: 'deconnexion',
+                },
+                dataType: 'json'
+            }).done(function (data) {
+                var deco=data.deconnexion;
+                if(deco==true){
+                    window.location = "FenetreConnexion.html";
+                }else{
+                    alert('Erreur dans la deconnexion');
+                }
+            });
+        }
+        
         function redirectAccueil(){
-            window.location = "ClientConnecte.html?idClient"+idClient;
+            window.location = "ClientConnecte.html";
         }
     
-        function demanderIntervention (idClient) {
-            window.location = "DemandeIntervention.html?idClient="+idClient;
+        function demanderIntervention () {
+            window.location = "DemandeIntervention.html";
         }
         
         function afficherHistorique (intervention) {
@@ -58,14 +77,11 @@ and open the template in the editor.
         }
             
             $(document).ready(function () {
-                var parameters = location.search.substring(1).split("=");
-                idClient= unescape(parameters[1]);
                 $.ajax({
                     url: './ActionServlet',
                     method: 'POST',
                     data: {
                         action: 'consulterHistoriqueClient',
-                        idClient: idClient
                     },
                     dataType: 'json'
                 }).done(function (data) {

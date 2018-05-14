@@ -12,7 +12,7 @@ and open the template in the editor.
     </head>
     <body>
         <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
-        <input type='button' name='button1' value='Se déconnecter' onclick="self.location.href='Proactif.html'">
+        <input type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
         <h2>Intervention à cloturer</h2>
@@ -25,6 +25,24 @@ and open the template in the editor.
         <input type="button" id="buttonCloture" name="buttonCloture" value="Cloturer">
         
         <script>
+            
+            function deconnexion(){
+                $.ajax({
+                    url: './ActionServlet',
+                    method: 'POST',
+                    data: {
+                        action: 'deconnexion',
+                    },
+                    dataType: 'json'
+                }).done(function (data) {
+                    var deco=data.deconnexion;
+                    if(deco==true){
+                        window.location = "FenetreConnexion.html";
+                    }else{
+                        alert('Erreur dans la deconnexion');
+                    }
+                });
+            }
             
             function updateTime() {
                 var currentTime = new Date();
@@ -44,7 +62,7 @@ and open the template in the editor.
             }
             
             function redirectAccueil(){
-                window.location = "EmployeConnecte.html?id="+idEmploye;
+                window.location = "EmployeConnecte.html";
             }
             
             function ajouter(intervention) {
@@ -101,19 +119,14 @@ and open the template in the editor.
             
             $(document).ready(function () {
                 
-                var parameters = location.search.substring(1).split("&");
+                var parameters = location.search.substring(1).split("=");
+                idIntervention = unescape(parameters[1]);
 
-                var temp = parameters[0].split("=");
-                idEmploye = unescape(temp[1]);
-                temp = parameters[1].split("=");
-                idIntervention = unescape(temp[1]);
-                
                 $.ajax({
                     url: './ActionServlet',
                     method: 'POST',
                     data: {
                         action: 'consulterInterventionEnCours',
-                        IdEmploye: idEmploye
                     },
                     dataType: 'json'
                 }).done(function (data) {

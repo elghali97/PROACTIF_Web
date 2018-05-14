@@ -64,12 +64,11 @@ and open the template in the editor.
                         dataType: 'json'
                     }).done(function (data) {;
                         var connection=data.Connexion.Authentification;
-                        var id=data.Connexion.Id;
                         if(connection=="OK" && champUserType=="employe"){
                             // si connexion ok, aller sur la page suivante :
-                            window.location = "EmployeConnecte.html?id="+id;
+                            window.location = "EmployeConnecte.html";
                         }else if (connection=="OK" && champUserType=="utilisateur"){
-                            window.location = "ClientConnecte.html?id="+id;
+                            window.location = "ClientConnecte.html";
                         }else{
                             $('#message').empty();
                         // si connexion pas ok afficher un texte dans la div message :

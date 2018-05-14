@@ -17,22 +17,38 @@ and open the template in the editor.
     </head>
     <body>
         <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
-        <input type='button' name='button1' value='Se déconnecter' onclick="self.location.href='Proactif.html'">
+        <input type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
         <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
         <hr/>
         <h1>Intervention de la journée</h1>
         <div id="map"></div>
         <script>
             
-            $(document).ready(function () {
-                var parameters = location.search.substring(1).split("=");
-                idEmploye= unescape(parameters[1]);
+            function deconnexion(){
                 $.ajax({
                     url: './ActionServlet',
                     method: 'POST',
                     data: {
-                        action: 'ConsulterHistoriqueEmploye',
-                        IdEmploye: idEmploye
+                        action: 'deconnexion',
+                    },
+                    dataType: 'json'
+                }).done(function (data) {
+                    var deco=data.deconnexion;
+                    if(deco==true){
+                        window.location = "FenetreConnexion.html";
+                    }else{
+                        alert('Erreur dans la deconnexion');
+                    }
+                });
+            }
+            
+            
+            $(document).ready(function () {
+                $.ajax({
+                    url: './ActionServlet',
+                    method: 'POST',
+                    data: {
+                        action: 'consulterHistoriqueEmploye',
                     },
                     dataType: 'json'
                 }).done(function (data) {
@@ -72,7 +88,7 @@ and open the template in the editor.
             }
             
             function redirectAccueil(){
-                window.location = "EmployeConnecte.html?id="+idEmploye;
+                window.location = "EmployeConnecte.html";
             }
             
             var googleMapInstance = null;
