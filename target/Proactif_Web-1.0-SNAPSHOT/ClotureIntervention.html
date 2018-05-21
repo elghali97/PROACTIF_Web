@@ -6,24 +6,30 @@ and open the template in the editor.
 -->
 <html>
     <head>
+        <link rel="stylesheet" href="stylesheet.css">
         <title>Cloture d'intervention</title>
         <meta charset="UTF-8">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
-        <input type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
-        <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
-        <hr/>
-        <h2>Intervention à cloturer</h2>
-        <ul id="liste-interventions"></ul>
-        Heure de fin :      <input id="endtime" type="time" name="endtime" required>
-        <input type="button" name="heureSystem" value="Heure Systeme" onClick=updateTime()>
-        <br>
-        <p>Commentaire (facultatif) :</p>
-        <textarea name="textarea" id="champ-commentaire" rows="10" cols="50"></textarea><br>
-        <input type="button" id="buttonCloture" name="buttonCloture" value="Cloturer">
+        <div id="entete">
+            <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
+            <div class="buttonsEnTete">
+                <input class="buttonEnTete" type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
+            </div>
+            <hr/>
+        </div>
         
+        <p class="subtitle">Intervention à cloturer</p>
+        <ul id="liste-interventions"></ul>
+        <div class="cloture">
+            <b>Heure de fin :</b>      <input id="endtime" type="time" name="endtime" required>
+            <input class="buttonEnTete" type="button" name="heureSystem" value="Heure Systeme" onClick=updateTime()>
+            <br>
+            <p><b>Commentaire (facultatif) :</b></p>
+            <textarea name="textarea" id="champ-commentaire" rows="10" cols="50"></textarea><br><br>
+            <input class="buttonValider" type="button" id="buttonCloture" name="buttonCloture" value="Cloturer">
+        </div>
         <script>
             
             function deconnexion(){
@@ -47,6 +53,9 @@ and open the template in the editor.
             function updateTime() {
                 var currentTime = new Date();
                 var hours = currentTime.getHours();
+                if (hours < 10){
+                    hours = "0" + hours;
+                }
                 var minutes = currentTime.getMinutes();
                 if (minutes < 10){
                     minutes = "0" + minutes;
@@ -55,6 +64,7 @@ and open the template in the editor.
                 document.getElementById('endtime').innerHTML=v;
                 var dateControl = document.querySelector('input[type="time"]');
                 dateControl.value = v;
+                console.log(v);
             }
             
             function getId(){
@@ -68,16 +78,19 @@ and open the template in the editor.
             function ajouter(intervention) {
                 if(intervention.active){
                     active="Intervention active";
+                    classe ="InterventionAct";
                 }else{
-                    active="Intervention cloturée"
+                    active="Intervention cloturée";
+                    classe="InterventionClot";
                 }
-                $('#liste-interventions').append('<p> Type d\'intervention: '+intervention.type+', '+active+'<\p>'
-                                                  +'<p> Description de l\'intervention: '+intervention.description+'<\p>'
-                                                  +'<p> [Client: <\p>'
-                                                  +'<p>    idClient: ' +intervention.client.idClient+'<\p>'
-                                                  +'<p>    Identite: '+intervention.client.nomClient+' '+intervention.client.prenomClient+'<\p>'
-                                                  +'<p>    Adresse: '+intervention.client.adresseClient+'<\p>'
-                                                  +'<p>    Telephone: '+intervention.client.numtelClient+']</p>');
+                $('#liste-interventions').append('<div class="'+classe+'">'
+                                                  +'<p><b>'+active+'</b></p>'
+                                                  +'<p> <b>Type d\'intervention:</b> '+intervention.type+'<\p>'
+                                                  +'<p> <b>Description de l\'intervention:</b> '+intervention.description+'<\p>'
+                                                  +'<p>    <b>Client:</b> '+intervention.client.nomClient+' '+intervention.client.prenomClient+'<\p>'
+                                                  +'<p>    <b>Adresse:</b> '+intervention.client.adresseClient+'<\p>'
+                                                  +'<p>    <b>Telephone:</b> '+intervention.client.numtelClient+'</p>'
+                                                  +'</div>');
             }
             
             function afficherErreur(){

@@ -15,7 +15,9 @@ and open the template in the editor.
     <body>
         <div id="entete">
             <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
-            <input type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
+            <div class="buttonsEnTete">
+                <input class='buttonEnTete' type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
+            </div>
             <hr/>
         </div>
         
@@ -28,9 +30,9 @@ and open the template in the editor.
                 <option value="Animal">Animal</option>
             </select><br/><br/>
             <p></p>
-            Description : 
-            <input type="text" name="text2" id="description" placeholder="Ajouter une description" /><br/><br/><br/><br/>
-            <input type='button' name='button2' id="validerButton" value='Valider'> 
+            <p><b>Description</b></p>
+            <textarea name="text2" id="description" rows="10" cols="50" placeholder="Ajouter une description" required></textarea><br><br>
+            <input class='buttonValider' type='button' name='button2' id="validerButton" value='Valider'> 
         </div>
          
         
@@ -95,29 +97,33 @@ and open the template in the editor.
                 var entreprise = $('#entreprise').val();
                 var animal = $('#animal').val();
                 var description = $('#description').val();
-                console.log("Récupération des données");
-                 $.ajax({
-                        url: './ActionServlet',
-                        method: 'POST',
-                        data: {
-                            action: 'intervention',
-                            type: type,
-                            objet: objet,
-                            entreprise: entreprise,
-                            animal: animal,
-                            description: description
-                        },
-                        dataType: 'json'
-                    }).done(function (data) {
-                        console.log("Confirmation reçue");
-                        var confIntervention = data.Intervention;
-                        if (confIntervention) {
-                            alert('Demande d\'intervention envoyée');
-                            window.location = "ClientConnecte.html";
-                        } else {
-                            alert('Echec de l\'envoi de demande d\'intervention, veuillez réessayer plus tard');
-                        }
-                    });
+                var count = $("#description").val().length;
+                if(count==0){
+                    alert('Veuillez entrer une description !')
+                }else{
+                    $.ajax({
+                           url: './ActionServlet',
+                           method: 'POST',
+                           data: {
+                               action: 'intervention',
+                               type: type,
+                               objet: objet,
+                               entreprise: entreprise,
+                               animal: animal,
+                               description: description
+                           },
+                           dataType: 'json'
+                       }).done(function (data) {
+                           console.log("Confirmation reçue");
+                           var confIntervention = data.Intervention;
+                           if (confIntervention) {
+                               alert('Demande d\'intervention envoyée');
+                               window.location = "ClientConnecte.html";
+                           } else {
+                               alert('Echec de l\'envoi de demande d\'intervention, veuillez réessayer plus tard');
+                           }
+                       });
+                }
             }
             
             $(document).ready(function () {

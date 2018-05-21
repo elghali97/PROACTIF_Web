@@ -9,7 +9,19 @@ and open the template in the editor.
 */
 
 #entete {
-    background-color: #80b3ff
+    background-color: #80b3ff;
+    display: flex;
+    align-items: center;
+}
+
+.subtitle{
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.fieldInscription{
+    text-align: center;
 }
 
 p {
@@ -25,6 +37,10 @@ h1 {
     padding-bottom: 1em;
     border-bottom: thin dotted;
     border-bottom-color: #80b3ff;
+    text-align: center;
+}
+
+.cloture {
     text-align: center;
 }
 
@@ -45,7 +61,12 @@ h1 {
     font-size: large;
 }
 
-#validerButton {
+.buttonsEnTete{
+    position: relative;
+    right: -50%
+}
+
+.buttonValider {
     background-color: #80b3ff; 
     border: none;
     color: black;
@@ -55,4 +76,58 @@ h1 {
     display: inline-block;
     font-size: 16px;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.buttonEnTete {
+    font-weight: bold;
+    background-color: #f4511e;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    font-size: 12px;
+    margin: 4px 2px;
+    opacity: 0.6;
+    transition: 0.3s;
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.buttonEnTete:hover {opacity: 1}
+
+.descriptionIntervention{
+    margin: auto;
+    width: 80%;
+    border: 3px solid green;
+    padding: 10px;
+}
+
+.InterventionAct {
+    border-radius: 25px;
+    background: #73AD21;
+    padding: 20px; 
+}
+
+.InterventionClot {
+    border-radius: 25px;
+    background: #FFD700;
+    padding: 20px; 
+}
+
+.formlogin{
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
+html, body { height: 100%; margin: 0; padding: 0; }
+
+h1 { text-align: center; }
+
+#map { 
+    height: 80%;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 10px solid #80b3ff
 }

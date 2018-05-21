@@ -7,19 +7,18 @@ and open the template in the editor.
 <html>
     <head>
         <title>Tableau de Bord</title>
-        <style type="text/css">
-            html, body { height: 100%; margin: 0; padding: 0; }
-            h1 { text-align: center; }
-            #map { height: 80%; }
-        </style>
+        <link rel="stylesheet" href="stylesheet.css">
         <meta charset="UTF-8">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
-        <input type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
-        <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
-        <hr/>
+        <div id="entete">
+            <span onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" onclick=redirectAccueil()><img src="./img/logo.png" alt="Logo" width="100" height="100"></span>
+            <div class="buttonsEnTete">
+                <input class="buttonEnTete" type='button' name='button1' value='Se déconnecter' onclick=deconnexion()>
+            </div>
+            <hr/>
+        </div>
         <h1>Intervention de la journée</h1>
         <div id="map"></div>
         <script>
@@ -42,6 +41,7 @@ and open the template in the editor.
                 });
             }
             
+            var interventions;
             
             $(document).ready(function () {
                 $.ajax({
@@ -55,10 +55,15 @@ and open the template in the editor.
                     var employe=data.employe;
                     latitude=employe.latitude;
                     longitude=employe.longitude;
-                    var interventions=data.interventions;
+                    interventions=data.interventions;
                     centerMap(latitude,longitude);
                     displayPositionEmployee(latitude,longitude);
                     generateMarkers(interventions);
+                });
+                
+                $(document).on('click','.savoir-plus',function(){
+                    var id=$(this).attr('data-id');
+                    displayDetail(id);
                 });
             });
             
@@ -110,8 +115,17 @@ and open the template in the editor.
             function initMap() {
             }
             
-            function displayDetail(information){
-                alert("Mon id:"+information.idIntervention);
+            function displayDetail(idInformation){
+                for(var i = 0; i < interventions.length; i++){
+                    if(interventions[i].idIntervention==idInformation){
+                        alert('Type d\'intervention: '+interventions[i].type+'\n'
+                        +'Description de l\'intervention: '+interventions[i].description+'\n'
+                        +'Client: '+interventions[i].client.nomClient+' '+interventions[i].client.prenomClient+'\n'
+                        +'Adresse: '+interventions[i].client.adresseClient+'\n'
+                        +'Telephone: '+interventions[i].client.numtelClient+'\n');
+                    }
+                    break;
+                }
             }
             
             function generateMarkers(interventions) {
@@ -135,7 +149,7 @@ and open the template in the editor.
                             marker, infowindow,
                             '<div><strong>Intervention #' + interventions[i].idIntervention + '</a></strong>'+
                             '<br/>Type:  ' + interventions[i].type +
-                            '<br/>'+'<a style="cursor: pointer; cursor: hand;">En savoir plus...</a>'
+                            '<br/>'+'<a class="savoir-plus" style="cursor: pointer; cursor: hand;" data-id="'+interventions[i].idIntervention+'">En savoir plus...</a>'
                             );
                 }
 

@@ -7,28 +7,36 @@ and open the template in the editor.
 <html>
     <head>
         <title>Connexion</title>
+        <link rel="stylesheet" href="stylesheet.css">
         <meta charset="UTF-8">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <a href="Proactif.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
-        <input type='button' name='button1' value='S inscrire' onclick="self.location.href='FenetreInscription.html'">
-        <input type='button' name='button2' value='Se connecter' onclick="self.location.href='FenetreConnexion.html'">
-        <input type='button' name='button3' value='Remplir Client' onclick=rempliAutoClient()>
-        <input type='button' name='button3' value='Remplir Employe' onclick=rempliAutoEmploye()>
-        <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
-        <hr/>
+        <div id="entete">
+            <a href="Proactif.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
+            <div class="buttonsEnTete">
+                <input class='buttonEnTete' type='button' name='button1' value='S inscrire' onclick="self.location.href='FenetreInscription.html'">
+                <input class='buttonEnTete' type='button' name='button2' value='Se connecter' onclick="self.location.href='FenetreConnexion.html'">
+                <input class='buttonEnTete' type='button' name='button3' value='Remplir Client' onclick=rempliAutoClient()>
+                <input class='buttonEnTete' type='button' name='button3' value='Remplir Employe' onclick=rempliAutoEmploye()>
+            </div>
+            <hr/>
+        </div>
         <br>
         <fieldset>
-            <legend>Veuillez sélectionner votre Mode de connexion:</legend>
-            <input type="radio" name="usertype" id="user" value="utilisateur" checked> Utilisateur<br>
-            <input type="radio" name="usertype" id="employee" value="employe" checked> Employe<br>
+            <legend><b>Veuillez sélectionner votre Mode de connexion:</b></legend>
+            <input type="radio" name="usertype" id="user" value="utilisateur" checked> <b>Utilisateur</b>
+            <input type="radio" name="usertype" id="employee" value="employe" checked> <b>Employe</b><br>
+            <img id="userIMG" src="./img/team.png" alt="team" height="70" width="70">
+            <img id="employeIMG" src="./img/customer-service.png" alt="service" height="50" width="50">
         </fieldset><br><br>
-        Mail: <input type="email" id="champ-login" name="mail" placeholder="Votre Identifiant" required="required"><br><br>
-        Mot de passe: <input type="password" id="champ-password" name="password" required><br><br>
-        <button id="bouton-connexion">Valider</button><br><br>
-        <div id="message"></div>
         
+        <div class="formlogin">
+            <b>Mail:</b> <input type="email" id="champ-login" name="mail" placeholder="Votre Identifiant" required="required"><br><br>
+            <b>Mot de passe:</b> <input type="password" id="champ-password" name="password" required><br><br>
+            <button class='buttonValider' id="bouton-connexion">Valider</button><br><br>
+            <div id="message"></div>
+        </div>
         <script>
             
             function rempliAutoClient(){

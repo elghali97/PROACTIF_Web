@@ -7,19 +7,24 @@ and open the template in the editor.
 <html>
     <head>
         <title>Page Inscription</title>
+        <link rel="stylesheet" href="stylesheet.css">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <a href="Proactif.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
-        <input type='button' name='button1' value='S inscrire' onclick="self.location.href='FenetreInscription.html'">
-        <input type='button' name='button2' value='Se connecter' onclick="self.location.href='FenetreConnexion.html'">
-        <input type='button' name='button3' value='Remplir automatiquement' onclick=rempliAuto()>
-        <!-- attention il faut définir l'alignement des boutons class='pull-right'-->
-        <hr/>
-            <fieldset>
-                <p>Veuillez remplir le formulaire ci-dessous: </p>
+        <div id="entete">
+            <a href="Proactif.html"><img src="./img/logo.png" alt="Logo" width="100" height="100"></a>
+            <div class="buttonsEnTete">
+                <input class='buttonEnTete' type='button' name='button1' value='S inscrire' onclick="self.location.href='FenetreInscription.html'">
+                <input class='buttonEnTete' type='button' name='button2' value='Se connecter' onclick="self.location.href='FenetreConnexion.html'">
+                <input class='buttonEnTete' type='button' name='button3' value='Remplir automatiquement' onclick=rempliAuto()>
+            </div>
+            <hr/>
+        </div>
+        <br>
+            <fieldset class="fieldInscription">
+                <p class="subtitle">Veuillez remplir le formulaire ci-dessous: </p>
                 Civilité :
                 <input type="radio" name="gender" id="man" value="man" checked> Monsieur
                 <input type="radio" name="gender" id="woman" value="woman" checked> Madame<br><br>
@@ -36,7 +41,7 @@ and open the template in the editor.
                 Confirmez Mail: <input type="email" id="conf-mail" name="conf-mail" required="required" onblur="confirmEmail()"><br><br>
                 Mot de passe: <input type="password" id="password" name="password" required="required"><br><br>
                 Confirmez Mot de Passe: <input type="password" name="conf-password" required="required" id="conf-password"><br><br>
-                <button id="boutonConfirmer">Confirmer</button><br/>
+                <button class="buttonValider" id="boutonConfirmer">Confirmer</button><br/>
             </fieldset>
         
         <script>
@@ -103,9 +108,9 @@ and open the template in the editor.
                     dataType: 'json'
                 }).done(function (data) {
                     // si connexion ok, aller sur la page suivante :
-                        var confInscription = data.inscription;
+                        var confInscription = data.Inscription;
                         console.log("Réponse inscription reçue");
-                        if (confInscription) {
+                        if (confInscription==true) {
                             window.location = "FenetreConfirmation.html";
                         } else {
                             alert('Echec de l\'inscription');
