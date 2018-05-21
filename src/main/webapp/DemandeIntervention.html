@@ -29,7 +29,7 @@ and open the template in the editor.
                 <option value="Livraison">Livraison</option>
                 <option value="Animal">Animal</option>
             </select><br/><br/>
-            <p></p>
+            <p id="ajout"></p>
             <p><b>Description</b></p>
             <textarea name="text2" id="description" rows="10" cols="50" placeholder="Ajouter une description" required></textarea><br><br>
             <input class='buttonValider' type='button' name='button2' id="validerButton" value='Valider'> 
@@ -62,19 +62,20 @@ and open the template in the editor.
             }
     
             function afficherObjetLivraison() {
-                $('p').append(' Objet à livrer : <input type="text" name="text3" id="objet" placeholder="Préciser l\'objet à livrer" /><br/><br/> ');
+                $('#ajout').append(' Objet à livrer : <input type="text" name="text3" id="objet" placeholder="Préciser l\'objet à livrer" /><br/><br/> ');
             }
             
             function afficherLivraison() {
-                $('p').append(' Entreprise : <input type="text" name="text3" id="entreprise" placeholder="Préciser une entreprise" /><br/><br/> ');
+                $('#ajout').append(' Entreprise : <input type="text" name="text3" id="entreprise" placeholder="Préciser une entreprise" /><br/><br/> ');
             }
             
             function afficherAnimal() {
-                $('p').append(' Animal : <input type="text" name="text4" id="animal" placeholder="Préciser l\'animal" /><br/><br/> ');
+                console.log("OK");
+                $('#ajout').append(' Animal : <input type="text" name="text4" id="animal" placeholder="Préciser l\'animal" /><br/><br/> ');
             }
             
             function effacer() {
-                $('p').empty();
+                $('#ajout').empty();
             }
             
             $('#liste').on('change', function() {
