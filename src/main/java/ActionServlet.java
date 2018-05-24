@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
 
 
 /**
- * @author LENOVO
+ * @author ebenchekroun clagadec
  **/
 @WebServlet(name="ActionServletSession",urlPatterns = {"/ActionServlet"})
 public class ActionServlet extends HttpServlet {
